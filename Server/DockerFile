@@ -1,27 +1,28 @@
 FROM php:8.2-apache
 
-# Atualiza e instala dependências do sistema necessárias antes de extensões PHP
+# Atualiza e instala dependências do sistema necessárias
 RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    libonig-dev \
     unzip \
     git \
     curl \
-    libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala extensões PHP necessárias (incluindo zip para composer)
-RUN docker-php-ext-install pdo pdo_mysql zip
+# Instala extensões PHP necessárias
+RUN docker-php-ext-install pdo pdo_mysql mbstring zip
 
 # Instala Composer globalmente
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Define o diretório de trabalho para /var/www/html
 WORKDIR /var/www/html
 
-# Copia o conteúdo do diretório atual para o container
 COPY . .
 
-# Executa a instalação das dependências via composer (sem dependências de dev)
+RUN composer clear-cache
 RUN composer install --no-dev --optimize-autoloader
 
-# Exponha a porta padrão do Apache
+# Ajusta permissões para Apache
+RUN chown -R www-data:www-data /var/www/html
+
 EXPOSE 80
