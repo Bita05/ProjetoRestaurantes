@@ -1,6 +1,5 @@
 FROM php:8.2-apache
 
-# Atualiza e instala dependências do sistema necessárias
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     libonig-dev \
@@ -9,20 +8,18 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala extensões PHP necessárias
 RUN docker-php-ext-install pdo pdo_mysql mbstring zip
 
-# Instala Composer globalmente
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www/html
 
 COPY Server/ .
 
+RUN rm -rf vendor
 RUN composer clear-cache
 RUN composer install --no-dev --optimize-autoloader
 
-# Ajusta permissões para Apache
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
