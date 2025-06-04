@@ -2,6 +2,6 @@ services:
   - type: web
     name: meu-php-server
     env: docker
-    dockerfilePath: server/Dockerfile
+    dockerfilePath: server/DockerFile
     autoDeploy: true
     plan: free
