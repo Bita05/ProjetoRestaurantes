@@ -10,7 +10,7 @@ return function (App $app) {
         $response = $handler->handle($request);
         
         return $response
-            ->withHeader('Access-Control-Allow-Origin', 'http://localhost:3000') 
+            ->withHeader('Access-Control-Allow-Origin', 'https://projeto-restaurantes-drab.vercel.app/') 
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
             ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With')
             ->withHeader('Access-Control-Allow-Credentials', 'true');
