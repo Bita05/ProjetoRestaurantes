@@ -6,26 +6,11 @@ require __DIR__ . '/../src/config/db.php';
 use Slim\Factory\AppFactory;
 use Psr\Container\ContainerInterface;
 use Slim\Middleware\CorsMiddleware;
-use Selective\BasePath\BasePathMiddleware;
 
 
 $app = AppFactory::create();
 
-
-$app->addRoutingMiddleware();
-
-
-$app->add(new BasePathMiddleware($app));
-
-$app->addErrorMiddleware(true, true, true);
-
 (require __DIR__ . '/cors.php')($app);
-
-
-$app->get('/teste', function ($request, $response, $args) {
-    $response->getBody()->write("Rota de teste funcionando!");
-    return $response;
-});
 
 require __DIR__ . '/../src/routes/auth.php';
 require __DIR__ . '/../src/routes/restaurantes.php';
