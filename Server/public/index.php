@@ -13,7 +13,7 @@ $app = AppFactory::create();
 (require __DIR__ . '/cors.php')($app);
 
 require __DIR__ . '/../src/routes/auth.php';
-require __DIR__ . '/../src/routes/restaurantes.php';
+(require __DIR__ . '/../src/routes/restaurantes.php')($app);
 require __DIR__ . '/../src/routes/menus.php';
 require __DIR__ . '/../src/routes/horarios.php';
 require __DIR__ . '/../src/routes/reservas.php';
