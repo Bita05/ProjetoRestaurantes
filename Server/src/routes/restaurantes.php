@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\RestauranteController;
+use Slim\App;
 
 return function (App $app) {
 $app->get('/restaurantes', function ($request, $response, $args) {
