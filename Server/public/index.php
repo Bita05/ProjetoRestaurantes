@@ -12,6 +12,12 @@ $app = AppFactory::create();
 
 (require __DIR__ . '/cors.php')($app);
 
+
+$app->get('/teste', function ($request, $response, $args) {
+    $response->getBody()->write("Rota de teste funcionando!");
+    return $response;
+});
+
 require __DIR__ . '/../src/routes/auth.php';
 require __DIR__ . '/../src/routes/restaurantes.php';
 require __DIR__ . '/../src/routes/menus.php';
