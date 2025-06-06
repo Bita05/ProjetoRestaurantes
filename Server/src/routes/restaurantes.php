@@ -1,9 +1,8 @@
 <?php
 
 use App\Controllers\RestauranteController;
-use Slim\App;
 
-return function (App $app) {
+
 $app->get('/restaurantes', function ($request, $response, $args) {
 
     global $pdo;
@@ -74,6 +73,3 @@ $app->get('/restaurante/RestaurantesPopulares', function ($request, $response, $
     return $restauranteController->ObterRestaurantesPopulares($request, $response, $args);
 });
 
-}
-
-?>
