@@ -1,6 +1,7 @@
 <?php
 
-use App\Controllers\RestauranteController;
+
+use App\controllers\RestauranteController;
 
 return function ($app) {
 
