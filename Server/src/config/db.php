@@ -1,10 +1,20 @@
 <?php
 // Pega as variáveis de ambiente definidas no Render
+
 $host = getenv('DB_HOST');        // ex: hopper.proxy.rlwy.net
 $port = getenv('DB_PORT');        // ex: 15790
 $dbname = getenv('DB_NAME');      // ex: railway
 $username = getenv('DB_USER');    // ex: root
 $password = getenv('DB_PASSWORD'); // a password da base
+
+
+/*
+$host = 'localhost';        // ou 'localhost'
+$port = '3306';             // porta padrão MySQL
+$dbname = 'db_mesafacil';
+$username = 'root';
+$password = ''; 
+*/
 
 // Cria o DSN incluindo o host, porta e base de dados
 $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";

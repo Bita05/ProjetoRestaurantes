@@ -12,9 +12,9 @@ export const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f78c40; /* Cor laranja */
+  background-color: #f78c40;
   color: white;
-  padding: 10px 20px; /* Barra mais compacta */
+  padding: 10px 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   position: fixed;
@@ -22,17 +22,48 @@ export const Header = styled.header`
   left: 0;
   right: 0;
   z-index: 10;
+  flex-wrap: wrap;  /* Permite quebrar a linha */
+
+  /* Ajuste para telas menores */
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 15px;
+  }
+
+  /* Ajustar os divs filhos para mobile */
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    @media (max-width: 600px) {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
 `;
+
 
 export const UserSection = styled.div`
   display: flex;
   align-items: center;
   color: white;
   font-size: 18px;
-  
+
   svg {
-    margin-right: 10px;  /* Espaçamento entre o ícone e o nome */
+    margin-right: 10px;
     font-size: 22px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 16px;
+
+    svg {
+      font-size: 18px;
+      margin-right: 6px;
+    }
   }
 `;
 
@@ -65,6 +96,11 @@ export const LogoutButton = styled.button`
   &:hover {
     background-color: #ff3f3f;
   }
+
+  @media (max-width: 600px) {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
 `;
 
 export const SettingsButton = styled.button`
@@ -78,6 +114,11 @@ export const SettingsButton = styled.button`
 
   &:hover {
     background-color: #f18f45;
+  }
+
+  @media (max-width: 600px) {
+    padding: 8px 12px;
+    font-size: 14px;
   }
 `;
 
@@ -137,7 +178,12 @@ export const Button = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color:rgb(204, 100, 35);
+    background-color: rgb(204, 100, 35);
+  }
+
+  @media (max-width: 600px) {
+    padding: 8px 12px;
+    font-size: 14px;
   }
 `;
 
