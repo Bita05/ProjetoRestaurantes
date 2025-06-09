@@ -3,10 +3,10 @@
 namespace App\Controllers;
 
 use App\models\Restaurantes;
-use App\Models\Menu;
-use App\Models\Utilizadores;
-use App\Models\Horarios;
-use App\Models\Reserva;
+use App\models\Menu;
+use App\models\Utilizadores;
+use App\models\Horarios;
+use App\models\Reserva;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use PDO;

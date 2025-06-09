@@ -3,7 +3,7 @@
 
 use App\controllers\RestauranteController;
 
-return function ($app) {
+
 
 $app->get('/restaurantes', function ($request, $response, $args) {
 
@@ -75,6 +75,6 @@ $app->get('/restaurante/RestaurantesPopulares', function ($request, $response, $
     return $restauranteController->ObterRestaurantesPopulares($request, $response, $args);
 });
 
-}
+
 
 ?>
