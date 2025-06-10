@@ -40,7 +40,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
             setUser(loggedUser);
         }
 
-        fetch('http://localhost:8080/restaurantes')
+        fetch('https://projetorestaurantes.onrender.com/restaurantes')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
@@ -54,7 +54,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
             });
 
 
-    fetch('http://localhost:8080/restaurante/RestaurantesPopulares')
+    fetch('https://projetorestaurantes.onrender.com/RestaurantesPopulares')
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
