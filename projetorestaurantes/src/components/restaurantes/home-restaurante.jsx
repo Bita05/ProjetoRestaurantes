@@ -32,7 +32,7 @@ const HomeRestaurante = () => {
 
     const fetchRestaurantInfo = async (userId) => {
         try {
-            const response = await fetch('http://localhost:8080/restaurante/info', {
+            const response = await fetch('https://projetorestaurantes.onrender.com/restaurante/info', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_utilizador: userId }),
@@ -59,7 +59,7 @@ const HomeRestaurante = () => {
 
     const fetchNumeroReservas = async (idRestaurante) => {
         try {
-            const response = await fetch('http://localhost:8080/restaurante/ObterNumeroReservas', {
+            const response = await fetch('https://projetorestaurantes.onrender.com/restaurante/ObterNumeroReservas', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_restaurante: idRestaurante }),
@@ -78,7 +78,7 @@ const HomeRestaurante = () => {
 
     const fetchCapacidadeComOcupacao = async (idRestaurante) => {
         try {
-            const response = await fetch('http://localhost:8080/ObterCapacidadeHorarios', {
+            const response = await fetch('https://projetorestaurantes.onrender.com/ObterCapacidadeHorarios', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_restaurante: idRestaurante }),
