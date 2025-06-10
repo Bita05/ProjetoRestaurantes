@@ -23,7 +23,7 @@ const RestauranteReservas = () => {
         }
 
         const idRestaurante = loggedUser.id_restaurante;
-        fetch('http://localhost:8080/restaurante/obterReservas', {
+        fetch('https://projetorestaurantes.onrender.com/restaurante/obterReservas', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

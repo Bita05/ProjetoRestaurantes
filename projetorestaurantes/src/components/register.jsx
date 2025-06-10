@@ -46,7 +46,7 @@ const Register = () => {
     const signupData = { nome, email, telefone, password, confirmPassword };
 
     try {
-      const response = await fetch('http://localhost:8080/register', {
+      const response = await fetch('https://projetorestaurantes.onrender.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

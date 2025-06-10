@@ -36,7 +36,7 @@ const RestauranteMinhaConta = () => {
 
     const fetchRestauranteInfo = async (idRestaurante) => {
         try {
-            const response = await fetch('http://localhost:8080/restaurante/DadosRestaurante', {
+            const response = await fetch('https://projetorestaurantes.onrender.com/restaurante/DadosRestaurante', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_restaurante: idRestaurante })
@@ -138,7 +138,7 @@ const RestauranteMinhaConta = () => {
     formData.append('horario', restauranteData.horario || '');  
     formData.append('pais', restauranteData.pais || '');
     try {
-        const response = await fetch('http://localhost:8080/restaurante/AtualizarRestaurante', {
+        const response = await fetch('https://projetorestaurantes.onrender.com/restaurante/AtualizarRestaurante', {
             method: 'POST',
             body: formData
         });

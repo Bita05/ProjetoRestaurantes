@@ -20,7 +20,7 @@ const RestauranteMenus = () => {
             }
 
             try {
-                const response = await fetch("http://localhost:8080/restaurante/listarMenu", {
+                const response = await fetch("https://projetorestaurantes.onrender.com/restaurante/listarMenu", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -80,7 +80,7 @@ const RestauranteMenus = () => {
         if (ConfDelete) {
             try {
 
-                const response = await fetch("http://localhost:8080/menu/delete", {
+                const response = await fetch("https://projetorestaurantes.onrender.com/menu/delete", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json', 

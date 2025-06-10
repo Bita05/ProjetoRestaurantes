@@ -25,7 +25,7 @@ const AdminPedidosDeRegisto = () => {
   useEffect(() => {
     const fetchContagemPendentes = async () => {
       try {
-        const response = await fetch('http://localhost:8080/admin/ObteredidosPendentes');
+        const response = await fetch('https://projetorestaurantes.onrender.com/admin/ObteredidosPendentes');
         const data = await response.json();
         if (response.ok && data.status === 'success') {
           setPendentes(data.pedidos_pendentes || 0);
@@ -43,7 +43,7 @@ const AdminPedidosDeRegisto = () => {
   useEffect(() => {
     const fetchContagemRestaurantes = async () => {
       try {
-        const response = await fetch('http://localhost:8080/admin/ObterNumRestaurantes');
+        const response = await fetch('https://projetorestaurantes.onrender.com/admin/ObterNumRestaurantes');
         const data = await response.json();
         if (response.ok && data.status === 'success') {
           setNumRestaurantes(data.num_restaurantes[0].num_restaurantes);
@@ -60,7 +60,7 @@ const AdminPedidosDeRegisto = () => {
     useEffect(() => {
     const fetchContagemClientes= async () => {
       try {
-        const response = await fetch('http://localhost:8080/admin/ObterNumClientes');
+        const response = await fetch('https://projetorestaurantes.onrender.com/admin/ObterNumClientes');
         const data = await response.json();
         if (response.ok && data.status === 'success') {
           setnumClientes(data.num_clientes[0].num_clientes);
