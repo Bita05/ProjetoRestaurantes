@@ -23,7 +23,7 @@ const AdminPedidosDeRegisto = () => {
     useEffect(() => {
         const fetchPedidos = async () => {
             try {
-                const response = await fetch('http://localhost:8080/admin/ObterPedidoRegisto');
+                const response = await fetch('https://projetorestaurantes.onrender.com/admin/ObterPedidoRegisto');
                 const data = await response.json();
 
                 if (response.ok) {
@@ -41,7 +41,7 @@ const AdminPedidosDeRegisto = () => {
 
     const handleAprovar = async (id) => {
         try {
-            const response = await fetch('http://localhost:8080/admin/AprovarPedido', {
+            const response = await fetch('https://projetorestaurantes.onrender.com/admin/AprovarPedido', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_pedidoregisto: id }),
@@ -64,7 +64,7 @@ const AdminPedidosDeRegisto = () => {
 
     const handleRejeitar = async  (id) => {
         try {
-            const response = await fetch('http://localhost:8080/admin/RejeitarPedido', {
+            const response = await fetch('https://projetorestaurantes.onrender.com/admin/RejeitarPedido', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_pedidoregisto: id }),
