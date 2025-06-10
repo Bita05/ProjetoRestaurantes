@@ -29,7 +29,7 @@ const RestauranteInfo = () => {
     
     useEffect(() => {
         if (!restaurante && id) {
-            fetch('https://projetorestaurantes.onrender.com/restaurante/getById', {
+            fetch('http://localhost:8080/restaurante/getById', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_restaurante: id })
@@ -52,7 +52,7 @@ const RestauranteInfo = () => {
     // Fetch menu items
     useEffect(() => {
         if (restaurante) {
-            fetch('https://projetorestaurantes.onrender.com/restaurante/listarMenu', {
+            fetch('http://localhost:8080/restaurante/listarMenu', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_restaurante: restaurante.id_restaurante })
@@ -79,7 +79,7 @@ const RestauranteInfo = () => {
     // Fetch horarios de funcionamento do restaurante
     useEffect(() => {
         if (restaurante) {
-            fetch('https://projetorestaurantes.onrender.com/horariosRestaurante', {
+            fetch('http://localhost:8080/horariosRestaurante', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_restaurante: restaurante.id_restaurante })

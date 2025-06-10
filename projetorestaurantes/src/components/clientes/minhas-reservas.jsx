@@ -20,7 +20,7 @@ const MinhasReservas = () => {
     if (!user) return;
 
     try {
-      const response = await fetch('https://projetorestaurantes.onrender.com/obterReservas', {
+      const response = await fetch('http://localhost:8080/obterReservas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_utilizador: user.id }),
@@ -39,7 +39,7 @@ const MinhasReservas = () => {
 
   const fetchReservasCanceladas = async () => {
     try {
-      const response = await fetch('https://projetorestaurantes.onrender.com/obterReservasCanceladas', {
+      const response = await fetch('http://localhost:8080/obterReservasCanceladas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_utilizador: user.id }),
@@ -58,7 +58,7 @@ const MinhasReservas = () => {
 
   const fetchReservasPassadas = async () => {
     try {
-      const response = await fetch('https://projetorestaurantes.onrender.com/obterReservasPassadas', {
+      const response = await fetch('http://localhost:8080/obterReservasPassadas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_utilizador: user.id }),
@@ -120,7 +120,7 @@ const MinhasReservas = () => {
     if (!confirm) return;
 
     try {
-      const response = await fetch('https://projetorestaurantes.onrender.com/cancelarReserva', {
+      const response = await fetch('http://localhost:8080/cancelarReserva', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_reserva: idReserva }),

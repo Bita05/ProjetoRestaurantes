@@ -18,8 +18,8 @@ const AdminUtilizadores = () => {
     const fetchUtilizadores = async () => {
         try {
             const endpoint = tipoSelecionado === 'cliente'
-                ? 'https://projetorestaurantes.onrender.com/admin/UtilizadoresClientes'
-                : 'https://projetorestaurantes.onrender.com/admin/Utilizadores';
+                ? 'http://localhost:8080/admin/UtilizadoresClientes'
+                : 'http://localhost:8080/admin/Utilizadores';
 
             const response = await fetch(endpoint);
             const data = await response.json();
@@ -69,7 +69,7 @@ const AdminUtilizadores = () => {
 
             if (imagem) formData.append('imagem', imagem);
 
-            const response = await fetch('https://projetorestaurantes.onrender.com/admin/EditarRestaurantes', {
+            const response = await fetch('http://localhost:8080/admin/EditarRestaurantes', {
                 method: 'POST',
                 body: formData,
             });

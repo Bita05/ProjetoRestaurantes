@@ -53,8 +53,8 @@ const RestauranteAddMenu = () => {
 
         try {
             const url = idMenu 
-                ? 'https://projetorestaurantes.onrender.com/menu/editar'  // endpoint de editar
-                : 'https://projetorestaurantes.onrender.com/restaurante/menu'; // endpoint de adicionar
+                ? 'http://localhost:8080/menu/editar'  // endpoint de editar
+                : 'http://localhost:8080/restaurante/menu'; // endpoint de adicionar
 
             const response = await axios.post(url, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },

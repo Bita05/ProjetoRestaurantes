@@ -56,7 +56,7 @@ const PedidoDeRegisto = () => {
             formData.append('telefone', restaurantData.telefone);
             formData.append('comprovativo', file);
 
-            const response = await fetch('https://projetorestaurantes.onrender.com/admin/pedidoRegisto', {
+            const response = await fetch('http://localhost:8080/admin/pedidoRegisto', {
                 method: 'POST',
                 body: formData, // multipart/form-data automático
             });

@@ -29,7 +29,7 @@ const RestauranteAddHorario = () => {
 
     const fetchHorarios = async (idRestaurante) => {
         try {
-            const response = await fetch('https://projetorestaurantes.onrender.com/horarios', {
+            const response = await fetch('http://localhost:8080/horarios', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ const RestauranteAddHorario = () => {
         const idRestaurante = loggedUser.id_restaurante;
 
         try {
-            const response = await fetch('https://projetorestaurantes.onrender.com/horarios/add', {
+            const response = await fetch('http://localhost:8080/horarios/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ const RestauranteAddHorario = () => {
 
       if (window.confirm("Tem certeza que deseja remover este horário?")) {
           try {
-              const response = await fetch('https://projetorestaurantes.onrender.com/removerHorarios', {
+              const response = await fetch('http://localhost:8080/removerHorarios', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',

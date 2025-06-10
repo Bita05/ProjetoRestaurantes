@@ -40,7 +40,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
             setUser(loggedUser);
         }
 
-        fetch('https://projetorestaurantes.onrender.com/restaurantes')
+        fetch('http://localhost:8080/restaurantes')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
@@ -54,7 +54,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
             });
 
 
-    fetch('https://projetorestaurantes.onrender.com/restaurante/RestaurantesPopulares')
+    fetch('http://localhost:8080/restaurante/RestaurantesPopulares')
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
@@ -105,7 +105,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
                     return;
                 }
     
-                const horariosData = await fetch('https://projetorestaurantes.onrender.com/horariosReserva', {
+                const horariosData = await fetch('http://localhost:8080/horariosReserva', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -133,7 +133,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
                     return;
                 }
     
-                const menuData = await fetch('https://projetorestaurantes.onrender.com/restaurante/listarMenu', {
+                const menuData = await fetch('http://localhost:8080/restaurante/listarMenu', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id_restaurante: selectedRestaurant.id_restaurante })
@@ -197,7 +197,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
 
             console.log('Dados da Reserva:', reservaData);
 
-            fetch('https://projetorestaurantes.onrender.com/addReservas', {
+            fetch('http://localhost:8080/addReservas', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(reservaData),
@@ -272,7 +272,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
         const idRestaurante = selectedRestaurant?.id_restaurante;
     
         try {
-            const response = await fetch('https://projetorestaurantes.onrender.com/verificarReservasExistentes', {
+            const response = await fetch('http://localhost:8080/verificarReservasExistentes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
