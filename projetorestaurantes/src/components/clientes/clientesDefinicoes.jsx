@@ -55,7 +55,7 @@ const Settings = () => {
             dataToSend.password = formData.password;
         }
 
-        fetch('http://localhost:8080/editarCliente', {
+        fetch('https://projetorestaurantes.onrender.com/editarCliente', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dataToSend),
