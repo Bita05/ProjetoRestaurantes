@@ -54,7 +54,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
             });
 
 
-    fetch('https://projetorestaurantes.onrender.com/RestaurantesPopulares')
+    fetch('https://projetorestaurantes.onrender.com/restaurante//RestaurantesPopulares')
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
