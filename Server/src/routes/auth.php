@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\AuthController;
+use App\controllers\AuthController;
 
 
 $app->post('/login', function ($request, $response, $args) {

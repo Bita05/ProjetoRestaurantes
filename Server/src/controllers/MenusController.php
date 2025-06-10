@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\Menu;
+use App\models\Menu;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use PDO;

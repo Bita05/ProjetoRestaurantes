@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\MenusController;
+use App\controllers\MenusController;
 
 
 

@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\Utilizadores;
-use App\Models\Restaurantes;
+use App\models\Utilizadores;
+use App\models\Restaurantes;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use PHPMailer\PHPMailer\PHPMailer;

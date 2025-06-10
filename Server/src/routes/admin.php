@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\AdminController;
+use App\controllers\AdminController;
 use App\config\EmailHandler;
 
 

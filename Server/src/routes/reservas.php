@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\ReservasController;
+use App\controllers\ReservasController;
 
 
 $app->post('/addReservas', function ($request, $response, $args) {

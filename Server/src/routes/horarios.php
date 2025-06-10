@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\HorariosController;
+use App\controllers\HorariosController;
 
 
 $app->post('/horarios/add', function ($request, $response, $args) {

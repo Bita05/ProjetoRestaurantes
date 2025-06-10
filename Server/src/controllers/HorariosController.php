@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Models\Restaurantes;
-use App\Models\Menu;
-use App\Models\Horarios;
+use App\models\Restaurantes;
+use App\models\Menu;
+use App\models\Horarios;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use PDO;
