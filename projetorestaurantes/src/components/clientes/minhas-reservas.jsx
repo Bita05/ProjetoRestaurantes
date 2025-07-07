@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { FaCog, FaSignOutAlt, FaUser, FaTrash, FaArrowLeft } from 'react-icons/fa';
-import {Container,Header,Banner,Button,LogoutButton,SettingsButton,UserSection } from '../../styles/HomeStyled';
+import { Container, Header, Banner, Button, LogoutButton, SettingsButton, UserSection } from '../../styles/HomeStyled';
 
-import {Title,ReservasList,ReservaCard,RestauranteImage,ReservaDetails,NomeRestaurante,ReservaInfo,CancelarButton,FilterContainer,FilterSelect,TabsContainer, Tab, ButtonVoltar} from '../../styles/MinhasReservasStyled';
+import { Title, ReservasList, ReservaCard, RestauranteImage, ReservaDetails, NomeRestaurante, ReservaInfo, CancelarButton, FilterContainer, FilterSelect, TabsContainer, Tab, ButtonVoltar } from '../../styles/MinhasReservasStyled';
 
 
 
@@ -14,6 +16,9 @@ const MinhasReservas = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
   const [filterOrder, setFilterOrder] = useState('asc');
   const [activeTab, setActiveTab] = useState('ativas');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
   const navigate = useNavigate();
 
   const fetchReservas = async () => {
@@ -129,15 +134,32 @@ const MinhasReservas = () => {
       const data = await response.json();
 
       if (response.ok && data.status === 'success') {
-        alert('Reserva cancelada com sucesso!');
-        fetchReservas();
+        //alert('Reserva cancelada com sucesso!');
+         showMessage('Reserva Cancelada com sucesso', 'success')
+         setReservas((prevReservas) =>
+        prevReservas.filter((reserva) => reserva.id_reserva !== idReserva)
+      );
+        //fetchReservas();
       } else {
-        alert(data.error || 'Erro ao cancelar a reserva.');
+        //alert(data.error || 'Erro ao cancelar a reserva.');
+         showMessage(data.error || 'Não foi possível cancelar a reserva!', 'error')
       }
     } catch (error) {
       console.error('Erro ao cancelar a reserva:', error);
-      alert('Erro na comunicação com o servidor.');
+      //alert('Erro na comunicação com o servidor.');
+       showMessage('Erro no servidor!', 'error')
     }
+  };
+
+  const showMessage = (message, severity = 'info') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setSnackbarOpen(false);
   };
 
   return (
@@ -319,6 +341,19 @@ const MinhasReservas = () => {
           )}
         </>
       )}
+
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
     </Container>
   );
 };

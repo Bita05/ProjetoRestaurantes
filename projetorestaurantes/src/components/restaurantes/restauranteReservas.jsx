@@ -46,7 +46,7 @@ const RestauranteReservas = () => {
         .finally(() => {
             setLoading(false);
         });
-    }, [loggedUser, navigate]);
+    }, [navigate]);
 
     // Filtro das reservas com base no dia da semana
     const reservasFiltradas = filtroDia

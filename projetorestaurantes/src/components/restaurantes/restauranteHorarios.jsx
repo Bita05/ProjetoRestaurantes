@@ -56,6 +56,11 @@ const RestauranteAddHorario = () => {
             return;
         }
 
+        if (Number(capacidadeMaxima) <= 0) {
+        alert('Capacidade máxima deve ser maior que zero.');
+        return;
+    }
+
         const loggedUser = JSON.parse(localStorage.getItem('user'));
         const idRestaurante = loggedUser.id_restaurante;
 

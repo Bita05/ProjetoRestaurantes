@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import {  Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, Content, DashboardTitle, InfoBox, SidebarSeparator, PedidosWrapper, PedidosTable, PedidosLinkDocumento, PedidosButton, PedidosActions, Footer } from '../../styles/HomeRestauranteStyled';
 import { FaTachometerAlt, FaSignOutAlt, FaUser, FaClipboardCheck   } from 'react-icons/fa';
 
@@ -7,6 +9,11 @@ const AdminPedidosDeRegisto = () => {
     const [user, setUser] = useState(null);
     const [pedidos, setPedidos] = useState([]);
     const [error, setError] = useState('');
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+
     const navigate = useNavigate();
 
     const baseURL = "http://localhost:8080"; // substitui pelo domínio ou IP do teu servidor
@@ -50,15 +57,18 @@ const AdminPedidosDeRegisto = () => {
             const data = await response.json();
     
             if (data.status === 'success') {
-                alert('Pedido aprovado com sucesso!');
+                //alert('Pedido aprovado com sucesso!');
+                showMessage('Pedido aprovado com sucesso!' , 'success');
                 setPedidos(pedidos.map(pedido =>
                     pedido.id_pedidoregisto === id ? { ...pedido, status: 'aprovado' } : pedido
                 ));
             } else {
-                alert(data.error || 'Erro ao aprovar pedido.');
+                //alert(data.error || 'Erro ao aprovar pedido.');
+                  showMessage(data.error || 'Erro ao aprovar pedido.' , 'error');
             }
         } catch (error) {
-            alert('Erro ao conectar ao servidor.');
+            //alert('Erro ao conectar ao servidor.');
+             showMessage('Erro ao conectar ao servidor' , 'error');
         }
     };
 
@@ -72,16 +82,30 @@ const AdminPedidosDeRegisto = () => {
 
             const data = await response.json();
             if (data.status === 'success') {
-                alert('Pedido Rejeitado com sucesso!');
+                //alert('Pedido Rejeitado com sucesso!');
+                showMessage('Pedido rejeitado com sucesso!' , 'success');
                 setPedidos(pedidos.map(pedido =>
                     pedido.id_pedidoregisto === id ? { ...pedido, status: 'rejeitado' } : pedido
                 ));
             } else {
-                alert(data.error || 'Erro ao rejeitar pedido.');
+                //alert(data.error || 'Erro ao rejeitar pedido.');
+                  showMessage(data.error || 'Erro ao rejeitar pedido.' , 'error');
             }
         } catch (error) {
-            alert('Erro ao conectar ao servidor.');
+            //alert('Erro ao conectar ao servidor.');
+            showMessage('Erro ao conectar ao servidor' , 'error');
         }
+    };
+
+    const showMessage = (message, severity = 'info') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
     };
 
     const handleDashboard = () => {
@@ -188,6 +212,17 @@ const AdminPedidosDeRegisto = () => {
             </div>
             </Content>
              <Footer>&copy; 2025 Administrador - Todos os direitos reservados</Footer>
+
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={4000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };

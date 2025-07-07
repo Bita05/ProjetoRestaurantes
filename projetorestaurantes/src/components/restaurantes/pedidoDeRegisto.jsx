@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { Container, FormWrapper, Title, Input, Button, ErrorMessage } from '../../styles/AuthStyled';
 
 const PedidoDeRegisto = () => {
@@ -9,9 +11,11 @@ const PedidoDeRegisto = () => {
     });
 
     const [file, setFile] = useState(null);
-
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,10 +30,10 @@ const PedidoDeRegisto = () => {
     };
 
 
-       const ValidarTelemovel = (telefone) => {
-    const regex = /^((9[1236])|(2\d)|(800)|(808)|(707))\d{7}$/;
-    return regex.test(telefone);
-};
+    const ValidarTelemovel = (telefone) => {
+        const regex = /^((9[1236])|(2\d)|(800)|(808)|(707))\d{7}$/;
+        return regex.test(telefone);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,13 +43,16 @@ const PedidoDeRegisto = () => {
         // Validação extra: garantir que o ficheiro foi escolhido
         if (!file) {
             setError('Por favor, envie o comprovativo de morada.');
+            showMessage('Comprovativo de morada é obrigatório!', 'error')
+
             return;
         }
 
-         if (!ValidarTelemovel(restaurantData.telefone)) {
-                setError('Deve indicar um número de telefone válido!');
-                return;
-         }
+        if (!ValidarTelemovel(restaurantData.telefone)) {
+            //setError('Deve indicar um número de telefone válido!');
+            showMessage('Deve indicar um número de telefone válido!', 'error')
+            return;
+        }
 
 
 
@@ -75,6 +82,18 @@ const PedidoDeRegisto = () => {
             setError('Erro ao conectar ao servidor. Tente novamente.');
         }
     };
+
+    const showMessage = (message, severity = 'info') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
+    };
+
 
     return (
         <Container>
@@ -123,6 +142,18 @@ const PedidoDeRegisto = () => {
                     <Button type="submit" style={{ marginTop: '15px' }}>Pedir Registo</Button>
                 </form>
             </FormWrapper>
+
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={4000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };

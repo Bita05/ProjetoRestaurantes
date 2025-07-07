@@ -55,6 +55,7 @@ class ReservasController
         FROM reservas
         WHERE id_cliente = :id_cliente
         AND data_reserva_marcada = :data_reserva_marcada
+        AND cancelada = 0
     ");
     $stmt->execute([
         ':id_cliente' => $id_cliente,
@@ -227,6 +228,7 @@ public function getHorariosComOcupacao(Request $request, Response $response, $ar
                     OR r.data_reserva_marcada > CURDATE()
                 )
             WHERE h.id_restaurante = :id_restaurante
+            AND h.ativo = 1
             GROUP BY h.id_horario
         ");
         $stmt->execute([':id_restaurante' => $id_restaurante]);
@@ -611,6 +613,7 @@ public function verificarReservaPorData(Request $request, Response $response, $a
         FROM reservas
         WHERE id_cliente = :id_cliente
         AND data_reserva_marcada = :data_reserva_marcada
+        AND cancelada = 0
     ");
     $stmt->execute([
         ':id_cliente' => $id_cliente,

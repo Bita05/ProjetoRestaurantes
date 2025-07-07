@@ -452,8 +452,10 @@ private function sendRejeicaoEmail($email, $nome)
         $restaurante->setHorario($horario);
         $restaurante->setIdRestaurante($id_restaurante);
       
+
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
         $utilizador = new Utilizadores();
-        $utilizador->setPassword($data['password']);
+        $utilizador->setPassword($hashedPassword);
 
     
         try {
@@ -470,8 +472,7 @@ private function sendRejeicaoEmail($email, $nome)
 
             $imagem = $restaurante->getImagem();
             $stmt->bindParam(':imagem', $imagem, PDO::PARAM_LOB);
-
-            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':password', $hashedPassword);
     
             $stmt->execute();
 
@@ -490,6 +491,51 @@ private function sendRejeicaoEmail($email, $nome)
     }
             
     }
+
+
+    public function AtualizarContaCliente(Request $request, Response $response, $args)
+    {
+    $data = $request->getParsedBody();
+
+    $requiredFields = ['id', 'nome', 'telefone', 'email'];
+    foreach ($requiredFields as $field) {
+        if (empty($data[$field])) {
+            return $this->jsonResponse($response, ['error' => "Campo obrigatório em falta: $field"], 400);
+        }
+    }
+
+    $id_cliente = $data['id'];
+    $nome = $data['nome'];
+    $telefone = $data['telefone'];
+    $email = $data['email'];
+
+    $password = isset($data['password']) && $data['password'] !== ''
+        ? password_hash($data['password'], PASSWORD_DEFAULT)
+        : null;
+
+    try {
+        $stmt = $this->pdo->prepare("CALL sp_AtualizarContaCliente(:id, :nome, :telefone, :email, :password, @ReturnID)");
+        $stmt->bindParam(':id', $id_cliente, PDO::PARAM_INT);
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password); 
+
+        $stmt->execute();
+
+        $stmt = $this->pdo->query("SELECT @ReturnID AS ReturnID");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result['ReturnID'] == 0) {
+            return $this->jsonResponse($response, ['error' => 'Cliente não encontrado.'], 404);
+        }
+
+        return $this->jsonResponse($response, ['status' => 'success', 'message' => 'Cliente atualizado com sucesso.'], 200);
+    } catch (Exception $e) {
+        return $this->jsonResponse($response, ['error' => 'Erro ao processar a requisição.', 'details' => $e->getMessage()], 500);
+    }
+    }
+
     
    
     public function ObterContagemPedidosPendentes(Request $request, Response $response, $args)

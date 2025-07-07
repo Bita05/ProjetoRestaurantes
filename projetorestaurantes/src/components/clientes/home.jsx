@@ -30,8 +30,8 @@ const Home = () => {
     const [restaurantesPopulares, setRestaurantesPopulares] = useState([]);
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-const [snackbarMessage, setSnackbarMessage] = useState('');
-const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 'error', 'warning', 'info'
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
 
     useEffect(() => {
@@ -290,6 +290,27 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('info'); // 'success', 
         }
     };
 
+const isRestaurantOpen = (horario) => {
+    if (!horario) return false;
+
+    const horarioParts = horario.split('-');
+    if (horarioParts.length !== 2) return false;
+
+    // Remove o 'h', formata para "HH:mm"
+    const [horaInicio, horaFim] = horarioParts.map(h => h.replace('h', '').padStart(2, '0') + ':00');
+
+    const now = new Date();
+    const startTime = new Date();
+    const endTime = new Date();
+
+    const [startHour, startMinute] = horaInicio.split(':').map(Number);
+    const [endHour, endMinute] = horaFim.split(':').map(Number);
+
+    startTime.setHours(startHour, startMinute, 0, 0);
+    endTime.setHours(endHour, endMinute, 0, 0);
+
+    return now >= startTime && now <= endTime;
+};
 
     const showMessage = (message, severity = 'info') => {
   setSnackbarMessage(message);
@@ -402,10 +423,28 @@ const handleSnackbarClose = (event, reason) => {
                                     src={`data:image/jpeg;base64,${restaurant.imagem}`}
                                     alt={restaurant.nome}
                                 />
+                                
                                 <div className="details">
-                                    <h3>{restaurant.nome}</h3>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <h3 style={{ margin: 0 }}>{restaurant.nome}</h3>
+                                        <span
+                                            style={{
+                                                backgroundColor: isRestaurantOpen(restaurant.horario) ? 'green' : 'red',
+                                                color: 'white',
+                                                borderRadius: '12px',
+                                                padding: '4px 8px',
+                                                fontWeight: 'bold',
+                                                fontSize: '0.8rem',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {isRestaurantOpen(restaurant.horario) ? 'Aberto' : 'Fechado'}
+                                        </span>
+                                    </div>
                                     <p>{restaurant.descricao}</p>
-                                    <p>{restaurant.localizacao}, {restaurant.cidade} - {restaurant.pais}</p>
+                                    <p>
+                                        {restaurant.localizacao}, {restaurant.cidade} - {restaurant.pais}
+                                    </p>
                                     <Button onClick={(e) => { e.stopPropagation(); openReservationModal(restaurant); }}>Reservar Mesa</Button>
                                 </div>
                             </RestaurantCard>

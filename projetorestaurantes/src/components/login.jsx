@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 import { Container, FormWrapper, Title, Input, Button, ErrorMessage, RegisterLink } from '../styles/AuthStyled';
 
 
@@ -9,6 +12,10 @@ const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,6 +37,7 @@ const Login = () => {
             if (response.ok) {
                 console.log('Login bem-sucedido', data);
 
+
                 // guardar os dados do utlizar no localstorage
                 localStorage.setItem('user', JSON.stringify(data.utilizador));
 
@@ -46,13 +54,28 @@ const Login = () => {
                   navigate('/admin/HomeAdmin');
                 }   
             } else {
-                setError(data.error || 'Erro ao fazer login');
+                //setError(data.error || 'Erro ao fazer login');
+                showMessage('Erro ao iniciar sessão', 'error');
+
             }
         } catch (error) {
-            setError('Erro ao conectar com o servidor');
+            //setError('Erro ao conectar com o servidor');
+            showMessage('Erro ao conectar com o servidor', 'error');
+
         }
         setLoading(false);
     };
+
+    const showMessage = (message, severity = 'info') => {
+  setSnackbarMessage(message);
+  setSnackbarSeverity(severity);
+  setSnackbarOpen(true);
+};
+
+const handleSnackbarClose = (event, reason) => {
+  if (reason === 'clickaway') return;
+  setSnackbarOpen(false);
+};
 
     return (
         <Container>
@@ -82,6 +105,17 @@ const Login = () => {
               <button onClick={() => navigate('/restaurantes/pedidoDeRegisto')}>Queres registar o teu restaurante?</button>
             </RegisterLink>
           </FormWrapper>
+
+           <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={4000}
+              onClose={handleSnackbarClose}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+            <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                   {snackbarMessage}
+            </Alert>
+         </Snackbar>
         </Container>
       );
     };

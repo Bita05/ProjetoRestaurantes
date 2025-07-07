@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Container, 
-  FormWrapper, 
-  Title, 
-  Input, 
-  Button, 
-  ErrorMessage, 
-  SuccessMessage, 
-  RegisterLink 
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import {
+  Container,
+  FormWrapper,
+  Title,
+  Input,
+  Button,
+  ErrorMessage,
+  SuccessMessage,
+  RegisterLink
 } from '../styles/AuthStyled';
 
 const Register = () => {
@@ -19,13 +21,17 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
 
-   const ValidarTelemovel = (telefone) => {
+  const ValidarTelemovel = (telefone) => {
     const regex = /^((9[1236])|(2\d)|(800)|(808)|(707))\d{7}$/;
     return regex.test(telefone);
-};
+  };
 
 
   const handleSubmit = async (e) => {
@@ -33,16 +39,18 @@ const Register = () => {
 
     // Verificar se as senhas coincidem novamente por questoes de segurança
     if (password !== confirmPassword) {
-      setError('As passwords têm de ser iguais!');
+      //setError('As passwords têm de ser iguais!');
+      showMessage('As passwords têm de ser iguais!', 'error')
       return;
     }
 
     if (!ValidarTelemovel(telefone)) {
-        setError('Deve indicar um numero de telefone válido!');
-        return;
+      //setError('Deve indicar um numero de telefone válido!');
+      showMessage('Deve indicar um número de telefone válido!', 'error')
+      return;
     }
 
-  
+
     const signupData = { nome, email, telefone, password, confirmPassword };
 
     try {
@@ -58,13 +66,27 @@ const Register = () => {
 
       if (response.ok) {
         setSuccessMessage('Registo bem-sucedido! Inicie Sessão.');
+        showMessage('Registo Bem-Sucedido!', 'success')
         setError('');
       } else {
         setError(data.error || 'Erro ao fazer registo');
+        showMessage('Erro ao registar-se!', 'error')
       }
     } catch (error) {
-      setError('Erro ao conectar com o servidor');
+      //setError('Erro ao conectar com o servidor');
+      showMessage('Erro no servidor!', 'error')
     }
+  };
+
+  const showMessage = (message, severity = 'info') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setSnackbarOpen(false);
   };
 
   return (
@@ -72,7 +94,7 @@ const Register = () => {
       <FormWrapper>
         <Title>Registar</Title>
         <form onSubmit={handleSubmit}>
-        <Input
+          <Input
             type="text"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
@@ -86,7 +108,7 @@ const Register = () => {
             placeholder="Email"
             required
           />
-           <Input
+          <Input
             type="tel"
             value={telefone}
             onChange={(e) => setTelefone(e.target.value)}
@@ -116,6 +138,19 @@ const Register = () => {
           Já tem uma conta? <button onClick={() => navigate('/login')}>Inicie Sessão</button>
         </RegisterLink>
       </FormWrapper>
+
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
     </Container>
   );
 };

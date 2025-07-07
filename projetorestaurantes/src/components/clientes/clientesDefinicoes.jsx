@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {FaSignOutAlt, FaUser, FaArrowLeft, FaCog } from 'react-icons/fa';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { FaSignOutAlt, FaUser, FaArrowLeft, FaCog } from 'react-icons/fa';
 import { Container, Header, Banner, Button, LogoutButton, UserSection, ButtonVoltar, SettingsButton } from '../../styles/HomeStyled';
 
 const Settings = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
     const [formData, setFormData] = useState({
         nome: '',
         email: '',
@@ -39,7 +44,8 @@ const Settings = () => {
 
     const handleUpdate = () => {
         if (formData.password !== formData.confirmPassword) {
-            alert('As passwords não coincidem!');
+            //alert('As passwords não coincidem!');
+            showMessage('As passwords não coincidem!', 'error');
             return;
         }
 
@@ -48,7 +54,7 @@ const Settings = () => {
             nome: formData.nome,
             email: formData.email,
             telefone: formData.telefone,
-            
+
         };
 
         if (formData.password) {
@@ -60,78 +66,93 @@ const Settings = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dataToSend),
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Dados atualizados com sucesso!');
-                localStorage.setItem('user', JSON.stringify({
-                    ...user,
-                    nome: formData.nome,
-                    email: formData.email,
-                    telefone: formData.telefone
-                }));
-                navigate('/');
-            } else {
-                alert('Erro ao atualizar: ' + (data.error || 'Tente novamente.'));
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao atualizar:', error);
-            alert('Erro ao atualizar os dados!');
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                   //alert('Dados atualizados com sucesso!');
+                    showMessage('Dados atualizados com sucesso!', 'success');
+                    localStorage.setItem('user', JSON.stringify({
+                        ...user,
+                        nome: formData.nome,
+                        email: formData.email,
+                        telefone: formData.telefone
+                    }));
+                    //navigate('/');
+                } else {
+                    
+                    //alert('Erro ao atualizar: ' + (data.error || 'Tente novamente.'));
+                    showMessage('Erro ao atualizar: ' + (data.error || 'Tente novamente.', 'error'));
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar:', error);
+                alert('Erro ao atualizar os dados!');
+            });
+    };
+
+
+    const showMessage = (message, severity = 'info') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
     };
 
     return (
         <Container>
-             <Header>
-                           <div>
-                               {user ? (
-                                   <UserSection>
-                                       <FaUser />
-                                       <span>{user.nome}</span>
-                                   </UserSection>
-                               ) : (
-                                   <Button onClick={() => navigate('/restaurantes/pedidoDeRegisto')}>
-                                       Pretende registar o seu restaurante?
-                                   </Button>
-                               )}
-                           </div>
-           
-                           <div>
-                               {user ? (
-                                   <>
-                                       <Button onClick={() => navigate('/clientes/minhas-reservas')}>Minhas Reservas</Button>
-                                       <SettingsButton onClick={() => navigate('/clientes/clientesDefinicoes')}>
-                                            <FaCog />
-                                        </SettingsButton>
-                                       <LogoutButton onClick={() => {
-                                           localStorage.removeItem('user');
-                                           setUser(null);
-                                       }}>
-                                           <FaSignOutAlt />
-                                       </LogoutButton>
-                                   </>
-                               ) : (
-                                   <>
-                                       <Button onClick={() => navigate('/register')}>Registar</Button>
-                                       <Button onClick={() => navigate('/login')}>Iniciar Sessão</Button>
-                                   </>
-                               )}
-                           </div>
-                       </Header>
-           
-                      
-                       <Banner>
-                          Definiçoes
-                       </Banner>
+            <Header>
+                <div>
+                    {user ? (
+                        <UserSection>
+                            <FaUser />
+                            <span>{user.nome}</span>
+                        </UserSection>
+                    ) : (
+                        <Button onClick={() => navigate('/restaurantes/pedidoDeRegisto')}>
+                            Pretende registar o seu restaurante?
+                        </Button>
+                    )}
+                </div>
 
-                       <ButtonVoltar onClick={() => navigate('/clientes/home')}>
-                               <FaArrowLeft size={18} />
-                               Voltar
-                        </ButtonVoltar>
-           
-                       
-                       
+                <div>
+                    {user ? (
+                        <>
+                            <Button onClick={() => navigate('/clientes/minhas-reservas')}>Minhas Reservas</Button>
+                            <SettingsButton onClick={() => navigate('/clientes/clientesDefinicoes')}>
+                                <FaCog />
+                            </SettingsButton>
+                            <LogoutButton onClick={() => {
+                                localStorage.removeItem('user');
+                                setUser(null);
+                            }}>
+                                <FaSignOutAlt />
+                            </LogoutButton>
+                        </>
+                    ) : (
+                        <>
+                            <Button onClick={() => navigate('/register')}>Registar</Button>
+                            <Button onClick={() => navigate('/login')}>Iniciar Sessão</Button>
+                        </>
+                    )}
+                </div>
+            </Header>
+
+
+            <Banner>
+                Definiçoes
+            </Banner>
+
+            <ButtonVoltar onClick={() => navigate('/clientes/home')}>
+                <FaArrowLeft size={18} />
+                Voltar
+            </ButtonVoltar>
+
+
+
 
             <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
                 <div>
@@ -193,6 +214,18 @@ const Settings = () => {
                     Atualizar Dados
                 </Button>
             </div>
+
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={4000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };

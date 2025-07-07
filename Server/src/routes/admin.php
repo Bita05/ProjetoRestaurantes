@@ -57,6 +57,15 @@ $app->post('/admin/EditarRestaurantes', function ($request, $response, $args) {
 });
 
 
+$app->post('/admin/AtualizarContaCliente', function ($request, $response, $args) {
+    global $pdo;
+    
+    $adminController = new AdminController($pdo);
+    return $adminController->AtualizarContaCliente($request, $response, $args);
+});
+
+
+
 $app->get('/admin/ObteredidosPendentes', function ($request, $response, $args) {
     global $pdo;
     

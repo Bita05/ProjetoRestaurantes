@@ -19,18 +19,22 @@ export const Heading = styled.h1`
     font-size: 3rem;
     font-weight: 700;
     color: #2c3e50;
-    margin-top: 1.5rem;
+    margin-top: 3rem;
     text-align: center;
 `;
 
 
 export const Image = styled.img`
     width: 100%;
+    max-width: 900px;
     height: auto;
+    margin: 2rem auto 0;
+    display: block;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 16px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 `;
+
 
 
 export const InfoSection = styled.section`
@@ -64,12 +68,9 @@ export const MenuSection = styled.section`
     width: 100%;
     max-width: 900px;
     margin-top: 2rem;
-    padding: 1.5rem;
-    background-color: #ecf0f1;
-    border-radius: 10px;
+    padding: 1.5rem 0;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    
+
     h3 {
         font-size: 1.8rem;
         margin-bottom: 1rem;
@@ -80,13 +81,13 @@ export const MenuSection = styled.section`
 export const Carousel = styled.div`
     display: flex;
     overflow-x: scroll;
-    gap: 15px;
+    gap: 20px;
     padding: 20px 0;
     `;
 
 export const CarouselItem = styled.div`
-    flex: 0 0 auto; /* Faz com que os itens tenham um tamanho fixo e não se expandam */
-    width: 150px; /* Tamanho ajustado para que o carrossel fique mais compacto */
+    flex: 0 0 auto;
+    width: 160px;
     height: auto;
     text-align: center;
 
@@ -109,6 +110,7 @@ export const CarouselItem = styled.div`
     }
     `;
 
+    
 
 export const ReserveSection = styled.div`
     text-align: center;

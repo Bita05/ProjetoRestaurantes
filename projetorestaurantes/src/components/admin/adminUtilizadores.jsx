@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaTachometerAlt, FaSignOutAlt, FaEdit, FaUser, FaClipboardCheck } from 'react-icons/fa';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { FaTachometerAlt, FaSignOutAlt, FaEdit, FaUser, FaClipboardCheck, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ModalForm, ModalFormContent, CloseFormButton, ModalFormTitle, ModalFormInput, ModalFormButton, GeneratePasswordFormButton, ModalFormLabel } from '../../styles/PopUpFormStyled';
 import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, Content, DashboardTitle, InfoBox, SidebarSeparator, TableUtilizadoresWrapper, TableUtilizadores, ErrorText, EditButton, Footer } from '../../styles/HomeRestauranteStyled';
 
@@ -12,7 +14,15 @@ const AdminUtilizadores = () => {
     const [error, setError] = useState('');
     const [imagem, setImagem] = useState(null);
     const [tipoSelecionado, setTipoSelecionado] = useState('restaurante'); // Controla o tipo (restaurante ou cliente)
+    const [showPassword, setShowPassword] = useState(false);
+    
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+
     const navigate = useNavigate();
+    
 
     // Função para fazer a requisição ao backend com base no tipo selecionado
     const fetchUtilizadores = async () => {
@@ -23,7 +33,7 @@ const AdminUtilizadores = () => {
 
             const response = await fetch(endpoint);
             const data = await response.json();
-
+            console.log(data)
             if (response.ok) {
                 setUtilizadores(data.utilizadores);
             } else {
@@ -45,7 +55,7 @@ const AdminUtilizadores = () => {
 
     const handleEdit = (utilizador) => {
         setSelectedUser(utilizador);
-        setNewPassword(utilizador.password || '');
+        setNewPassword('');
         setModalIsOpen(true);
     };
 
@@ -56,7 +66,8 @@ const AdminUtilizadores = () => {
     };
 
     const handleSave = async () => {
-        try {
+    try {
+        if (tipoSelecionado === 'restaurante') {
             const formData = new FormData();
             formData.append('id_restaurante', selectedUser.id_restaurante);
             formData.append('nome', selectedUser.nome_restaurante);
@@ -74,21 +85,58 @@ const AdminUtilizadores = () => {
                 body: formData,
             });
 
+            const data = await response.json();
+
             if (response.ok) {
-                const data = await response.json();
+                //alert('Restaurante atualizado com sucesso!');
+                showMessage('Restaurante atualizado com sucesso!' , 'success');
                 fetchUtilizadores();
-                alert('Restaurante atualizado com sucesso!');
-                setModalIsOpen(false);
-                setSelectedUser(null);
-                setImagem(null);
+                handleCloseModal();
             } else {
-                const errorData = await response.json();
-                setError(errorData.error || 'Erro ao atualizar o restaurante.');
+                //setError(data.error || 'Erro ao atualizar o restaurante.');
+                showMessage(data.error || 'Erro ao atualizar o restaurante.' , 'error');
             }
-        } catch (error) {
-            setError('Erro ao conectar ao servidor ou ao atualizar o restaurante.');
+
+        } else if (tipoSelecionado === 'cliente') {
+
+
+            if (!ValidarTelemovel(selectedUser.telefone)) {
+                alert('Deve indicar um numero de telefone válido!');
+                showMessage('D  eve indicar um numero de telefone válido.' , 'error');
+                return;
+            } 
+
+            const formData = new FormData();
+            formData.append('id', selectedUser.id);
+            formData.append('nome', selectedUser.nome);
+            formData.append('telefone', selectedUser.telefone);
+            formData.append('email', selectedUser.email);
+            formData.append('password', newPassword);
+
+          
+
+            const response = await fetch('http://localhost:8080/admin/AtualizarContaCliente', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                //alert('Cliente atualizado com sucesso!');
+                showMessage('Cliente atualizado com sucesso!' , 'success');
+                fetchUtilizadores();
+                handleCloseModal();
+            } else {
+                //setError(data.error || 'Erro ao atualizar o cliente.');
+                showMessage(data.error || 'Erro ao atualizar o cliente.' , 'error');
+            }
         }
-    };
+    } catch (error) {
+        //setError('Erro ao conectar ao servidor ou ao atualizar o utilizador.');
+        showMessage('Erro ao conectar ao servidor ou ao atualizar o utilizador.' , 'error');
+    }
+};
 
     // Função para gerar uma senha mais simples e comum
     const generatePassword = (length = 10) => {
@@ -99,6 +147,22 @@ const AdminUtilizadores = () => {
             password += charset[randomIndex];
         }
         return password;
+    };
+
+ const ValidarTelemovel = (telefone) => {
+        const regex = /^((9[1236])|(2\d)|(800)|(808)|(707))\d{7}$/;
+        return regex.test(telefone);
+    };
+
+    const showMessage = (message, severity = 'info') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
     };
 
     const handleGeneratePassword = () => {
@@ -263,14 +327,36 @@ const AdminUtilizadores = () => {
                                             onChange={(e) => setSelectedUser({ ...selectedUser, horario: e.target.value })}
                                         />
 
-                                        {/* Adicionando o campo de "Password" para o restaurante */}
+                                        
                                         <ModalFormLabel>Password:</ModalFormLabel>
+                                       <div style={{ position: 'relative', width: '100%' }}>
                                         <ModalFormInput
-                                            type="password"
-                                            value={newPassword || selectedUser.password}
+                                            type={showPassword ? 'text' : 'password'}
+                                            value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
-                                            readOnly
+                                            style={{ paddingRight: '40px' }} // espaço para o botão
+                                            readOnly 
                                         />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(prev => !prev)}
+                                            style={{
+                                                position: 'absolute',
+                                                right: '10px',
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                background: 'none',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                fontSize: '16px',
+                                                color: '#333',
+                                            }}
+                                            title={showPassword ? 'Esconder password' : 'Mostrar password'}
+                                        >
+                                            {showPassword ?  <FaEyeSlash /> : <FaEye/> }
+                                        </button>
+                                    </div>
+                                        
                                         <GeneratePasswordFormButton type="button" onClick={handleGeneratePassword}>
                                             Gerar Password
                                         </GeneratePasswordFormButton>
@@ -303,20 +389,45 @@ const AdminUtilizadores = () => {
                                         />
 
                                         <ModalFormLabel>Password:</ModalFormLabel>
-                                        <ModalFormInput
-                                            type="password"
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                            readOnly
-                                        />
+                                       <div style={{ position: 'relative', width: '100%' }}>
+                                            <ModalFormInput
+                                                type={showPassword ? 'text' : 'password'}
+                                                value={newPassword}
+                                                onChange={(e) => setNewPassword(e.target.value)}
+                                                readOnly
+                                                style={{ paddingRight: '40px' }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(prev => !prev)}
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    fontSize: '16px',
+                                                    color: '#333',
+                                                }}
+                                                title={showPassword ? 'Esconder password' : 'Mostrar password'}
+                                            >
+                                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                            </button>
+                                        </div>
                                         <GeneratePasswordFormButton type="button" onClick={handleGeneratePassword}>
                                             Gerar Password
                                         </GeneratePasswordFormButton>
                                     </>
                                 )}
 
-                                <ModalFormLabel>Imagem:</ModalFormLabel>
-                                <input type="file" onChange={(e) => setImagem(e.target.files[0])} />
+                              {tipoSelecionado === 'restaurante' && (
+                                    <>
+                                        <ModalFormLabel>Imagem:</ModalFormLabel>
+                                        <input type="file" onChange={(e) => setImagem(e.target.files[0])} />
+                                    </>
+                                )}
 
                                 <ModalFormButton onClick={handleSave}>Guardar</ModalFormButton>
                                 <ModalFormButton onClick={handleCloseModal}>Cancelar</ModalFormButton>
@@ -326,6 +437,18 @@ const AdminUtilizadores = () => {
                 </ModalForm>
             )}
              <Footer>&copy; 2025 Administrador - Todos os direitos reservados</Footer>
+
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={4000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };
