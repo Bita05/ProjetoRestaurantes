@@ -23,11 +23,12 @@ const RestauranteAddHorario = () => {
             return null; 
         }
 
-        const idRestaurante = loggedUser.id_restaurante;
-        fetchHorarios(idRestaurante);
-    }, [loggedUser, navigate]);
+        
+        fetchHorarios(loggedUser.id_restaurante);
+    }, [navigate]);
 
     const fetchHorarios = async (idRestaurante) => {
+        
         try {
             const response = await fetch('http://localhost:8080/horarios', {
                 method: 'POST',
@@ -254,9 +255,7 @@ const RestauranteAddHorario = () => {
                 <td>{horario.hora_fim}</td>
                 <td>{horario.capacidade_maxima}</td>
                 <td>
-                <IconButton onClick={() => handleEdit(horario)}>
-                    <FaEdit />
-                </IconButton>
+               
                 <IconButton onClick={() => handleDelete(horario.id_horario)}>
                     <FaTrash />
                 </IconButton>

@@ -157,7 +157,7 @@ export const MenuList = styled.div`
 
   @media (max-width: 768px) {
   max-height: 300px;
-}
+}F
 
 @media (max-height: 600px) {
   max-height: 250px;
@@ -171,7 +171,7 @@ export const MenuCard = styled.div`
   border-radius: 10px;
   overflow: hidden;
   display: flex;
-  flex-direction: column;  
+  flex-direction: row;  
   cursor: pointer;
   transition: box-shadow 0.3s;
 
@@ -187,11 +187,11 @@ export const MenuCard = styled.div`
 
 export const MenuImage = styled.img`
   width: 120px;
-  height: 120px;  
+  height: 100%;  
   object-fit: cover;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  align-self: flex-start;
+  flex-shrink: 0;
 `;
 
 export const MenuDetails = styled.div`
@@ -229,7 +229,7 @@ export const MenuPrice = styled.p`
 `;
 
 export const SelectMenuButton = styled.button`
-  width: 100%;
+  width: 50px;
   padding: 8px;
   background-color: ${({ isSelecionado }) => (isSelecionado ? '#7d7a77' : '#ff7f32')};
   color: white;

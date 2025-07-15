@@ -231,7 +231,7 @@ const MinhasReservas = () => {
               <option value="desc">Preço mais alto</option>
             </FilterSelect>
           </FilterContainer>
-          <hr />
+          
           {reservas.length > 0 ? (
             <ReservasList>
               {reservas.map((reserva) => {
@@ -253,7 +253,7 @@ const MinhasReservas = () => {
                       </ReservaInfo>
                       <ReservaInfo>Preço Total: €{precoTotal.toFixed(2)}</ReservaInfo>
                       <ReservaInfo>Número de pessoas: {reserva.num_pessoas}</ReservaInfo>
-                      <ReservaInfo>Data da reserva: {reserva.data_reserva}</ReservaInfo>
+                      <ReservaInfo>Data da reserva: {reserva.data_reserva_marcada}</ReservaInfo>
 
                       <CancelarButton onClick={() => cancelarReserva(reserva.id_reserva)}>
                         <FaTrash />
@@ -271,7 +271,7 @@ const MinhasReservas = () => {
 
       {activeTab === 'canceladas' && (
         <>
-          <hr />
+          
           {reservasCanceladas.length > 0 ? (
             <ReservasList>
               {reservasCanceladas.map((reserva) => {
@@ -308,7 +308,7 @@ const MinhasReservas = () => {
 
       {activeTab === 'passadas' && (
         <>
-          <hr />
+        
           {reservasPassadas.length > 0 ? (
             <ReservasList>
               {reservasPassadas.map((reserva) => {

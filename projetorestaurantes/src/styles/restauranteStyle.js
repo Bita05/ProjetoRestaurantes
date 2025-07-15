@@ -4,6 +4,7 @@ export const Container = styled.div`
     display: flex;
     min-height: 100vh;
     background-color: #f5f5f5;
+    overflow: hidden;
 `;
 
 export const Sidebar = styled.nav`
@@ -16,6 +17,10 @@ export const Sidebar = styled.nav`
     color: white;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
 `;
 
 export const SidebarBrand = styled.h1`
@@ -58,12 +63,15 @@ export const SidebarSeparator = styled.hr`
 `;
 
 export const Content = styled.main`
-    display: flex;
-    flex-grow: 1;
-    padding: 30px;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 100%;
+    margin-left: 200px; /* desloca para lado da sidebar fixa */
+  padding: 30px;
+  height: 100vh; /* altura total da viewport */
+  overflow-y: auto; /* scroll só aqui */
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: calc(100% - 200px); /* ocupa restante da tela */
+  box-sizing: border-box;
 `;
 
 export const DashboardTitle = styled.h2`

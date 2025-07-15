@@ -227,6 +227,7 @@ public function getHorariosComOcupacao(Request $request, Response $response, $ar
                     (r.data_reserva_marcada = CURDATE() AND h.hora_inicio >= CURTIME())
                     OR r.data_reserva_marcada > CURDATE()
                 )
+                AND r.cancelada = 0
             WHERE h.id_restaurante = :id_restaurante
             AND h.ativo = 1
             GROUP BY h.id_horario
@@ -458,6 +459,7 @@ public function ObterReservasCliente(Request $request, Response $response, $args
                     'hora_inicio' => $data['hora_inicio'] ?? null,
                     'hora_fim' => $data['hora_fim'] ?? null,
                     'data_reserva' => $data['data_reserva'] ?? null,
+                    'data_reserva_marcada' => $data['data_reserva_marcada'] ?? null,
                     'num_pessoas' => $data['num_pessoas'] ?? null,
                     'imagem_restaurante' => !empty($data['imagem_restaurante']) ? base64_encode($data['imagem_restaurante']) : null,
                     'menus' => []
@@ -517,6 +519,7 @@ public function ObterReservasCanceladasCliente(Request $request, Response $respo
                     'hora_inicio' => $data['hora_inicio'] ?? null,
                     'hora_fim' => $data['hora_fim'] ?? null,
                     'data_reserva' => $data['data_reserva'] ?? null,
+                    'data_reserva_marcada' => $data['data_reserva_marcada'] ?? null,
                     'num_pessoas' => $data['num_pessoas'] ?? null,
                     'imagem_restaurante' => !empty($data['imagem_restaurante']) ? base64_encode($data['imagem_restaurante']) : null,
                     'menus' => []

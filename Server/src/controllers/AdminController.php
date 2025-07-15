@@ -110,9 +110,9 @@ class AdminController
             $mail->Subject = 'Pedido de Registo Recebido';
             $mail->Body    = '
                 <h1>Olá ' . $nome . '!</h1>
-                <p>Recebemos seu pedido de registro como restaurante. Em breve entraremos em contato para aprovação.</p>
+                <p>Recebemos seu pedido de registo como restaurante. Em breve entraremos em contato.</p>
                 <p>Seu pedido foi enviado com sucesso e está pendente aprovação!</p>
-                <p>Atenciosamente,<br>Equipe MesaFácil</p>
+                <p>Atenciosamente,<br>Equipa MesaFácil</p>
                 <p><small>Este é um e-mail automático, por favor, não responda.</small></p>
             ';
     
@@ -414,7 +414,7 @@ private function sendRejeicaoEmail($email, $nome)
         $data = $request->getParsedBody();
         $files = $request->getUploadedFiles();
     
-        $requiredFields = ['id_restaurante', 'nome', 'localizacao', 'cidade', 'pais', 'descricao', 'horario', 'password'];
+        $requiredFields = ['id_restaurante', 'nome', 'localizacao', 'cidade', 'pais', 'descricao', 'horario'];
     
         foreach ($requiredFields as $field) {
             if (empty($data[$field])) {
@@ -472,7 +472,14 @@ private function sendRejeicaoEmail($email, $nome)
 
             $imagem = $restaurante->getImagem();
             $stmt->bindParam(':imagem', $imagem, PDO::PARAM_LOB);
-            $stmt->bindParam(':password', $hashedPassword);
+
+           $password = $data['password'] ?? null;
+            if (!empty($password)) {
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(':password', null, PDO::PARAM_NULL);
+            }
     
             $stmt->execute();
 

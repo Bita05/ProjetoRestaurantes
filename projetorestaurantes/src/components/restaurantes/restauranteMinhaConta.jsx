@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTachometerAlt, FaPlus, FaSignOutAlt, FaRegClock, FaCalendarAlt, FaUser } from 'react-icons/fa';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, SidebarSeparator, Content, DashboardTitle, FormWrapperConta, FormTitleConta, FormConta, InputGroup, Input, Button, Label, Footer, Subtitle, 
     InfoPessoalWrapper, ReadOnlyInput, ImagePreview
   } from '../../styles/restauranteStyle'; 
@@ -23,6 +25,9 @@ const RestauranteMinhaConta = () => {
     });
 
     const [loading, setLoading] = useState(true);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -113,6 +118,7 @@ const RestauranteMinhaConta = () => {
         return;
     }   
 
+
   
     const formData = new FormData();
     
@@ -146,19 +152,33 @@ const RestauranteMinhaConta = () => {
         const data = await response.json();
         console.log(data)
         if (data.status === 'success') {
-            alert('Informações atualizadas com sucesso!');
+            //alert('Informações atualizadas com sucesso!');
+             showMessage('Informações atualizadas com sucesso!', 'success');
         } else {
-            alert('Erro ao atualizar: ' + data.error);
+            //alert('Erro ao atualizar: ' + data.error);
+            showMessage('Erro ao atualizar', 'error');
         }
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro na atualização.');
+        showMessage('Erro' + error, 'error');
+        //alert('Erro na atualização.');
     }
 };
 
     const handleLogout = () => {
         localStorage.removeItem('user');
         navigate('/login');
+    };
+
+      const showMessage = (message, severity = 'info') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
     };
 
     if (loading) return <p>Carregando informações...</p>;
@@ -284,6 +304,19 @@ const RestauranteMinhaConta = () => {
 
 
             <Footer>&copy; 2025 {restauranteData?.nomeRestaurante || 'Restaurante'} - Todos os direitos reservados</Footer>
+
+
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={4000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };

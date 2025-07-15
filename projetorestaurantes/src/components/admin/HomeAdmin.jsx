@@ -28,7 +28,7 @@ const AdminPedidosDeRegisto = () => {
         const response = await fetch('http://localhost:8080/admin/ObteredidosPendentes');
         const data = await response.json();
         if (response.ok && data.status === 'success') {
-          setPendentes(data.pedidos_pendentes || 0);
+          setPendentes(data.pedidos[0].pedidos_pendetes || 0);
         }
       } catch (error) {
         console.error('Erro ao procurar pedidos pendentes:', error);
@@ -46,7 +46,7 @@ const AdminPedidosDeRegisto = () => {
         const response = await fetch('http://localhost:8080/admin/ObterNumRestaurantes');
         const data = await response.json();
         if (response.ok && data.status === 'success') {
-          setNumRestaurantes(data.num_restaurantes[0].num_restaurantes);
+          setNumRestaurantes(data.num_restaurantes[0].num_restaurantes || 0);
         }
       } catch (error) {
         console.error('Erro ao procurar contagem de restaurantes:', error);
@@ -63,7 +63,7 @@ const AdminPedidosDeRegisto = () => {
         const response = await fetch('http://localhost:8080/admin/ObterNumClientes');
         const data = await response.json();
         if (response.ok && data.status === 'success') {
-          setnumClientes(data.num_clientes[0].num_clientes);
+          setnumClientes(data.num_clientes[0].num_clientes || 0);
         }
       } catch (error) {
         console.error('Erro ao procurar contagem de restaurantes:', error);
@@ -128,9 +128,8 @@ const AdminPedidosDeRegisto = () => {
                        <FaClipboardCheck style={{ fontSize: '30px', marginRight: '10px' }} />
                         Pedidos Pendentes
                         </InfoBoxAdminTitle>
-                        <InfoBoxAdminText>
-                            {pendentes}
-                         </InfoBoxAdminText>
+                        <InfoBoxAdminText>{pendentes}</InfoBoxAdminText>
+                        <InfoBoxAdminRestaurantesSubText>Total de restaurantes pendentes</InfoBoxAdminRestaurantesSubText>
                             {pendentes === 0 && <p style={{ color: '#7f8c8d' }}>Nenhum pedido aguardando aprovação.</p>}
                          </InfoBoxAdmin>
                     </td>
@@ -142,6 +141,7 @@ const AdminPedidosDeRegisto = () => {
                         </InfoBoxAdminRestaurantesTitle>
                         <InfoBoxAdminRestaurantesText>{numRestaurantes}</InfoBoxAdminRestaurantesText>
                     <InfoBoxAdminRestaurantesSubText>Total de restaurantes no sistema</InfoBoxAdminRestaurantesSubText>
+                    {numRestaurantes === 0 && <p style={{ color: '#7f8c8d' }}>Nenhum restaurante registado</p>} 
                     </InfoBoxAdmin>
                     </td>
                     <td>
@@ -152,6 +152,7 @@ const AdminPedidosDeRegisto = () => {
                         </InfoBoxAdminClientesTitle>
                         <InfoBoxAdminClientesText>{numClientes}</InfoBoxAdminClientesText>
                     <InfoBoxAdminRestaurantesSubText>Total de clientes no sistema</InfoBoxAdminRestaurantesSubText>
+                      {numClientes === 0 && <p style={{ color: '#7f8c8d' }}>Nenhum cliente registado</p>} 
                     </InfoBoxAdmin>
                     </td>
                 </tr>

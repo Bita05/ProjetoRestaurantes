@@ -45,7 +45,7 @@ const RestauranteMenus = () => {
         };
 
         fetchMenus();
-    }, [loggedUser, navigate]);
+    }, []);
 
     const Logout = () => {
         localStorage.removeItem('user');
@@ -101,7 +101,7 @@ const RestauranteMenus = () => {
                     showMessage("Menu removido com sucesso!", 'success');
                 } else {
                     //alert("Erro ao remover o menu: " + data.error);
-                    showMessage("Erro ao remover o menu: " + data.error, 'error');
+                    showMessage("Não foi possivel remover o menu! ", 'error');
                 }
             } catch (error) {
                 console.error("Erro ao remover o menu:", error);

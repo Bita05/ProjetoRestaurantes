@@ -4,7 +4,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { FaTachometerAlt, FaSignOutAlt, FaEdit, FaUser, FaClipboardCheck, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ModalForm, ModalFormContent, CloseFormButton, ModalFormTitle, ModalFormInput, ModalFormButton, GeneratePasswordFormButton, ModalFormLabel } from '../../styles/PopUpFormStyled';
-import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, Content, DashboardTitle, InfoBox, SidebarSeparator, TableUtilizadoresWrapper, TableUtilizadores, ErrorText, EditButton, Footer } from '../../styles/HomeRestauranteStyled';
+import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, Content, DashboardTitle, SidebarSeparator, TableUtilizadoresWrapper, TableUtilizadores, ErrorText, EditButton, Footer } from '../../styles/HomeRestauranteStyled';
 
 const AdminUtilizadores = () => {
     const [utilizadores, setUtilizadores] = useState([]);
@@ -20,7 +20,6 @@ const AdminUtilizadores = () => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
-
     const navigate = useNavigate();
     
 
@@ -68,6 +67,13 @@ const AdminUtilizadores = () => {
     const handleSave = async () => {
     try {
         if (tipoSelecionado === 'restaurante') {
+
+            const horarioRegex = /^\d{1,2}h-\d{1,2}h$/;
+            if (!horarioRegex.test(selectedUser.horario)) {
+                    showMessage('Formato de horário inválido. Use o formato Ex: 9h-23h', 'error');
+                    return; 
+                }
+
             const formData = new FormData();
             formData.append('id_restaurante', selectedUser.id_restaurante);
             formData.append('nome', selectedUser.nome_restaurante);
@@ -325,6 +331,9 @@ const AdminUtilizadores = () => {
                                             type="text"
                                             value={selectedUser.horario || ''}
                                             onChange={(e) => setSelectedUser({ ...selectedUser, horario: e.target.value })}
+                                            pattern="^\d{1,2}h-\d{1,2}h$"
+                                            title="Formato esperado: 9h-23h"
+                                            required
                                         />
 
                                         

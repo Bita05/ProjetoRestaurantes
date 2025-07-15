@@ -116,7 +116,7 @@ public function register(Request $request, Response $response, $args)
     }
 
 
-    $this->sendWelcomeEmail($email, $nome);
+    $this->sendRegistoEmail($email, $nome);
  
     return $this->jsonResponse($response, [
         'status' => 'success',
@@ -130,7 +130,7 @@ public function register(Request $request, Response $response, $args)
     ], 201);
 }
 
-private function sendWelcomeEmail($email, $nome)
+private function sendRegistoEmail($email, $nome)
 {
     $mail = new PHPMailer(true);
 
@@ -156,10 +156,10 @@ private function sendWelcomeEmail($email, $nome)
         $mail->Body    = '
                 <h1>Bem Vindo ' . $nome . '!</h1>
                 <p>Bem-vindo ao nosso sistema de reservas! Sua conta foi criada com sucesso.</p>
-                <p>Agora você pode começar a explorar os restaurantes e fazer suas reservas de forma fácil e rápida.</p>
-                <p>Estamos muito felizes em tê-lo(a) conosco. Não perca tempo, acesse nosso sistema agora e faça sua primeira reserva!</p>
+                <p>Agora já podes começar a explorar os restaurantes e fazer as reservas de forma fácil e rápida.</p>
+                <p>Estamos muito felizes em tê-lo(a) conosco. Não perca tempo, faça sua primeira reserva!</p>
                 <p><strong>Se precisar de ajuda, entre em contato com nosso suporte.</strong></p>
-                <p>Atenciosamente,<br>Equipe MesaFácil</p>
+                <p>Atenciosamente,
                 <p><small>Este é um e-mail automático, por favor, não responda.</small></p>
 ';
 
