@@ -19,7 +19,7 @@ const AdminPedidosDeRegisto = () => {
 
     const navigate = useNavigate();
 
-    const baseURL = "http://localhost:8080"; // substitui pelo domínio ou IP do teu servidor
+    const baseURL = "http://localhost:8080";
 
     useEffect(() => {
         const loggedUser = JSON.parse(localStorage.getItem('user'));

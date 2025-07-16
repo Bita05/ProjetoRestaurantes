@@ -41,15 +41,12 @@ const Home = () => {
     useEffect(() => {
         const loggedUser = JSON.parse(localStorage.getItem('user'));
 
-         if (!loggedUser || loggedUser.tipo !== 'cliente') {
-            navigate('/login');
-            return;
-         }
-        
+         if (loggedUser) {
             setUser(loggedUser);
+        }
         
 
-        fetch('https://projetorestaurantes.onrender.com/restaurantes')
+        fetch('http://localhost:8080/restaurantes')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
