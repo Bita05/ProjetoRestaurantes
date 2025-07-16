@@ -4,10 +4,14 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { FaSignOutAlt, FaUser, FaArrowLeft, FaCog } from 'react-icons/fa';
 import { Container, Header, Banner, Button, LogoutButton, UserSection, ButtonVoltar, SettingsButton } from '../../styles/HomeStyled';
+import {ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton} from '../../styles/PopUpSair';
 
 const Settings = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const confirmLogout = () => setShowLogoutModal(true);
+    const LogoutCancelled = () => setShowLogoutModal(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
@@ -69,7 +73,7 @@ const Settings = () => {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                   //alert('Dados atualizados com sucesso!');
+                    //alert('Dados atualizados com sucesso!');
                     showMessage('Dados atualizados com sucesso!', 'success');
                     localStorage.setItem('user', JSON.stringify({
                         ...user,
@@ -79,7 +83,7 @@ const Settings = () => {
                     }));
                     //navigate('/');
                 } else {
-                    
+
                     //alert('Erro ao atualizar: ' + (data.error || 'Tente novamente.'));
                     showMessage('Erro ao atualizar: ' + (data.error || 'Tente novamente.', 'error'));
                 }
@@ -90,6 +94,10 @@ const Settings = () => {
             });
     };
 
+ const LogoutConfirm = () => {
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
 
     const showMessage = (message, severity = 'info') => {
         setSnackbarMessage(message);
@@ -125,10 +133,7 @@ const Settings = () => {
                             <SettingsButton onClick={() => navigate('/clientes/clientesDefinicoes')}>
                                 <FaCog />
                             </SettingsButton>
-                            <LogoutButton onClick={() => {
-                                localStorage.removeItem('user');
-                                setUser(null);
-                            }}>
+                            <LogoutButton onClick={confirmLogout}>
                                 <FaSignOutAlt />
                             </LogoutButton>
                         </>
@@ -226,6 +231,20 @@ const Settings = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+
+            {showLogoutModal && (
+                <ModalSair>
+                    <ModalSairContent>
+                        <ModalTitle>Terminar Sessão</ModalTitle>
+                        <p>Tem a certeza que deseja sair?</p>
+                        <ModalButtons>
+                            <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+                            <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+                        </ModalButtons>
+                    </ModalSairContent>
+                </ModalSair>
+            )}
         </Container>
     );
 };

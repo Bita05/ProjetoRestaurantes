@@ -34,13 +34,24 @@ const Register = () => {
   };
 
 
+    const validarPassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return regex.test(password);
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Verificar se as senhas coincidem novamente por questoes de segurança
+    
     if (password !== confirmPassword) {
       //setError('As passwords têm de ser iguais!');
       showMessage('As passwords têm de ser iguais!', 'error')
+      return;
+    }
+
+      if (!validarPassword(password)) {
+      showMessage('A password deve ter pelo menos 8 caracteres, uma maiúscula, uma minúscula, um número e um símbolo.', 'error');
       return;
     }
 
@@ -130,6 +141,16 @@ const Register = () => {
             placeholder="Confirmar password"
             required
           />
+          <div style={{ fontSize: '0.9rem', marginTop: '0.5rem', color: '#555', marginBottom: '1rem' }}>
+          <p style={{ marginBottom: '0.3rem' }}>A password deve conter:</p>
+          <ul style={{ paddingLeft: '1.2rem', margin: 0 }}>
+            <li>Pelo menos 8 caracteres</li>
+            <li>Pelo menos 1 letra maiúscula</li>
+            <li>Pelo menos 1 letra minúscula</li>
+            <li>Pelo menos 1 número</li>
+            <li>Pelo menos 1 símbolo</li>
+          </ul>
+        </div>
           <Button type="submit">Criar Conta</Button>
           {error && <ErrorMessage>{error}</ErrorMessage>}
           {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}

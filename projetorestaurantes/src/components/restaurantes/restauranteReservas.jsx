@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, SidebarSeparator, Content, DashboardTitle, Footer, Card, MenuList, MenuItem, Modal, ModalContent, Button, MenuImage } from '../../styles/restauranteStyle'; 
+import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, SidebarSeparator, Content, DashboardTitle, Footer, Card, MenuList, MenuItem, Modal, ModalContent, Button, MenuImage } from '../../styles/restauranteStyle';
+import {ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton} from '../../styles/PopUpSair';
 import { FaTachometerAlt, FaPlus, FaSignOutAlt, FaRegClock, FaCalendarAlt, FaUser } from 'react-icons/fa';
 
 const RestauranteReservas = () => {
@@ -9,16 +10,20 @@ const RestauranteReservas = () => {
     const [loading, setLoading] = useState(true);
     const [erro, setErro] = useState(null);
     const [filtroDia, setFiltroDia] = useState('');
-    const [reservaSelecionada, setReservaSelecionada] = useState(null); 
+    const [reservaSelecionada, setReservaSelecionada] = useState(null);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const confirmLogout = () => setShowLogoutModal(true);
+    const LogoutCancelled = () => setShowLogoutModal(false);
+
 
 
     const loggedUser = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
-        
+
 
         if (!loggedUser || loggedUser.tipo !== 'restaurante') {
-            navigate('/login'); 
+            navigate('/login');
             return null
         }
 
@@ -30,22 +35,22 @@ const RestauranteReservas = () => {
             },
             body: JSON.stringify({ id_restaurante: idRestaurante })
         })
-        .then(res => res.json())
-        .then(data => {
-          
-            if (data.status === 'success') {
-                console.log(data.reservas)
-                setReservas(data.reservas);
-            } else {
-                setErro(data.error || 'Erro ao exibir reservas');
-            }
-        })
-        .catch(err => {
-            setErro('Erro ao conectar ao servidor.');
-        })
-        .finally(() => {
-            setLoading(false);
-        });
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.status === 'success') {
+                    console.log(data.reservas)
+                    setReservas(data.reservas);
+                } else {
+                    setErro(data.error || 'Erro ao exibir reservas');
+                }
+            })
+            .catch(err => {
+                setErro('Erro ao conectar ao servidor.');
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, [navigate]);
 
     // Filtro das reservas com base no dia da semana
@@ -58,7 +63,7 @@ const RestauranteReservas = () => {
         return menus.reduce((total, menu) => total + parseFloat(menu.preco), 0).toFixed(2);
     };
 
-    const Logout = () => {
+     const LogoutConfirm = () => {
         localStorage.removeItem('user');
         navigate('/login');
     };
@@ -96,7 +101,7 @@ const RestauranteReservas = () => {
                 </SidebarMenu>
                 <SidebarSeparator />
                 <SidebarMenu>
-                    <SidebarLink onClick={Logout}><FaSignOutAlt /> Logout</SidebarLink>
+                      <SidebarLink onClick={confirmLogout}><FaSignOutAlt /> Sair</SidebarLink>
                 </SidebarMenu>
             </Sidebar>
 
@@ -173,6 +178,19 @@ const RestauranteReservas = () => {
             </Content>
 
             <Footer>&copy; 2025 {loggedUser?.nome || 'Restaurante'} - Todos os direitos reservados</Footer>
+
+            {showLogoutModal && (
+                <ModalSair>
+                    <ModalSairContent>
+                        <ModalTitle>Terminar Sessão</ModalTitle>
+                        <p>Tem a certeza que deseja sair?</p>
+                        <ModalButtons>
+                            <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+                            <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+                        </ModalButtons>
+                    </ModalSairContent>
+                </ModalSair>
+            )}
         </Container>
     );
 };

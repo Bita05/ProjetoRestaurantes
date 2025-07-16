@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
+import {
     Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, Content, DashboardTitle, InfoBox, Footer, SidebarSeparator, CardNumReservas, ReservasContent, ReservasNumber, ReservasText,
     CapacidadeCard, DiaSemanaTitle, HorarioCard, HorarioText, HorarioLabel, CapacidadeContainer, RestauranteInfoHeader, RestauranteName, StatusText, RestauranteDetails, RestauranteDescription, RestauranteLocation, RestauranteSchedule, StatusBadge
 } from '../../styles/HomeRestauranteStyled';
-
+import {ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton} from '../../styles/PopUpSair';
 import { FaTachometerAlt, FaPlus, FaSignOutAlt, FaRegClock, FaCalendarAlt, FaUser, FaChartLine } from 'react-icons/fa';
 
 const HomeRestaurante = () => {
@@ -12,6 +12,10 @@ const HomeRestaurante = () => {
     const [restaurant, setRestaurant] = useState(null);
     const [reservations, setReservations] = useState(0);
     const [capacidade, setCapacidade] = useState([]);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+    const confirmLogout = () => setShowLogoutModal(true);
+    const LogoutCancelled = () => setShowLogoutModal(false);
 
     useEffect(() => {
         const loggedUser = JSON.parse(localStorage.getItem('user'));
@@ -114,7 +118,9 @@ const HomeRestaurante = () => {
         return now >= startTime && now <= endTime;
     };
 
-    const Logout = () => {
+ 
+
+    const LogoutConfirm = () => {
         localStorage.removeItem('user');
         navigate('/login');
     };
@@ -149,7 +155,7 @@ const HomeRestaurante = () => {
                 </SidebarMenu>
                 <SidebarSeparator />
                 <SidebarMenu>
-                    <SidebarLink onClick={Logout}><FaSignOutAlt /> Logout</SidebarLink>
+                    <SidebarLink onClick={confirmLogout}><FaSignOutAlt /> Sair</SidebarLink>
                 </SidebarMenu>
             </Sidebar>
 
@@ -205,6 +211,22 @@ const HomeRestaurante = () => {
             </Content>
 
             <Footer>&copy; 2025 {restaurant?.nome || 'Restaurante'} - Todos os direitos reservados</Footer>
+
+
+
+
+            {showLogoutModal && (
+                <ModalSair>
+                    <ModalSairContent>
+                        <ModalTitle>Terminar Sessão</ModalTitle>
+                        <p>Tem a certeza que deseja sair?</p>
+                        <ModalButtons>
+                            <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+                            <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+                        </ModalButtons>
+                    </ModalSairContent>
+                </ModalSair>
+            )}
         </Container>
     );
 };

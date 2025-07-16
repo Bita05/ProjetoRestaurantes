@@ -3,28 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import { FaTachometerAlt, FaPlus, FaSignOutAlt, FaRegClock, FaCalendarAlt, FaUser } from 'react-icons/fa';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, SidebarSeparator, Content, DashboardTitle, FormWrapperConta, FormTitleConta, FormConta, InputGroup, Input, Button, Label, Footer, Subtitle, 
+import { ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton } from '../../styles/PopUpSair';
+import {
+    Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, SidebarSeparator, Content, DashboardTitle, FormWrapperConta, FormTitleConta, FormConta, InputGroup, Input, Button, Label, Footer, Subtitle,
     InfoPessoalWrapper, ReadOnlyInput, ImagePreview
-  } from '../../styles/restauranteStyle'; 
+} from '../../styles/restauranteStyle';
 
 const RestauranteMinhaConta = () => {
     const [restauranteData, setRestauranteData] = useState({
-       nomeRestaurante: '',
-    imagem: '',
-    descricao: '',
-    localizacao: '',
-    cidade: '',
-    pais: '',
-    horario: '',
-    id_utilizador: '',
-    nomeUtilizador: '',
-    email: '',
-    telefone: '',
-    password: '',
-    confirmarPassword: ''
+        nomeRestaurante: '',
+        imagem: '',
+        descricao: '',
+        localizacao: '',
+        cidade: '',
+        pais: '',
+        horario: '',
+        id_utilizador: '',
+        nomeUtilizador: '',
+        email: '',
+        telefone: '',
+        password: '',
+        confirmarPassword: ''
     });
 
     const [loading, setLoading] = useState(true);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const confirmLogout = () => setShowLogoutModal(true);
+    const LogoutCancelled = () => setShowLogoutModal(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
@@ -91,86 +96,86 @@ const RestauranteMinhaConta = () => {
     };
 
 
-     const ValidarTelemovel = (telefone) => {
+    const ValidarTelemovel = (telefone) => {
         const regex = /^((9[1236])|(2\d)|(800)|(808)|(707))\d{7}$/;
         return regex.test(telefone);
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const loggedUser = JSON.parse(localStorage.getItem('user'));
-    if (restauranteData.password && restauranteData.password !== restauranteData.confirmarPassword) {
-        alert('As passwords não coincidem.');
-        return;
-    }
+        e.preventDefault();
 
-
-    const horarioValido = /^\d{1,2}h-\d{1,2}h$/.test(restauranteData.horario);
-    if (!horarioValido) {
-    alert('Por favor, insira o horário no formato correto, exemplo: 9h-23h');
-    return;
-  }
-
-
-    if (!ValidarTelemovel(restauranteData.telefone)) {
-        alert('Deve indicar um numero de telefone válido!');
-        return;
-    }   
-
-
-  
-    const formData = new FormData();
-    
-
-    if (restauranteData.imagem instanceof File) {
-    // Se selecionou uma nova imagem, envia ela
-    formData.append('imagem', restauranteData.imagem);
-  } else {
-    // Senão, converte a imagem atual (string base64 ou URL) para blob e envia
-    const response = await fetch(restauranteData.imagem);
-    const blob = await response.blob();
-    const file = new File([blob], 'imagem_atual.jpg', { type: blob.type });
-    formData.append('imagem', file);
-  }
-
-    formData.append('id_utilizador', restauranteData.id_utilizador || loggedUser.id);
-    formData.append('telefone', restauranteData.telefone || '');
-    formData.append('password', restauranteData.password || '');
-    formData.append('nome', restauranteData.nomeRestaurante || '');
-    formData.append('descricao', restauranteData.descricao || '');
-    formData.append('localizacao', restauranteData.localizacao || '');
-    formData.append('cidade', restauranteData.cidade || '');
-    formData.append('horario', restauranteData.horario || '');  
-    formData.append('pais', restauranteData.pais || '');
-    try {
-        const response = await fetch('http://localhost:8080/restaurante/AtualizarRestaurante', {
-            method: 'POST',
-            body: formData
-        });
-
-        const data = await response.json();
-        console.log(data)
-        if (data.status === 'success') {
-            //alert('Informações atualizadas com sucesso!');
-             showMessage('Informações atualizadas com sucesso!', 'success');
-        } else {
-            //alert('Erro ao atualizar: ' + data.error);
-            showMessage('Erro ao atualizar', 'error');
+        const loggedUser = JSON.parse(localStorage.getItem('user'));
+        if (restauranteData.password && restauranteData.password !== restauranteData.confirmarPassword) {
+            alert('As passwords não coincidem.');
+            return;
         }
-    } catch (error) {
-        console.error('Erro:', error);
-        showMessage('Erro' + error, 'error');
-        //alert('Erro na atualização.');
-    }
-};
 
-    const handleLogout = () => {
+
+        const horarioValido = /^\d{1,2}h-\d{1,2}h$/.test(restauranteData.horario);
+        if (!horarioValido) {
+            alert('Por favor, insira o horário no formato correto, exemplo: 9h-23h');
+            return;
+        }
+
+
+        if (!ValidarTelemovel(restauranteData.telefone)) {
+            alert('Deve indicar um numero de telefone válido!');
+            return;
+        }
+
+
+
+        const formData = new FormData();
+
+
+        if (restauranteData.imagem instanceof File) {
+            // Se selecionou uma nova imagem, envia ela
+            formData.append('imagem', restauranteData.imagem);
+        } else {
+            // Senão, converte a imagem atual (string base64 ou URL) para blob e envia
+            const response = await fetch(restauranteData.imagem);
+            const blob = await response.blob();
+            const file = new File([blob], 'imagem_atual.jpg', { type: blob.type });
+            formData.append('imagem', file);
+        }
+
+        formData.append('id_utilizador', restauranteData.id_utilizador || loggedUser.id);
+        formData.append('telefone', restauranteData.telefone || '');
+        formData.append('password', restauranteData.password || '');
+        formData.append('nome', restauranteData.nomeRestaurante || '');
+        formData.append('descricao', restauranteData.descricao || '');
+        formData.append('localizacao', restauranteData.localizacao || '');
+        formData.append('cidade', restauranteData.cidade || '');
+        formData.append('horario', restauranteData.horario || '');
+        formData.append('pais', restauranteData.pais || '');
+        try {
+            const response = await fetch('http://localhost:8080/restaurante/AtualizarRestaurante', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            console.log(data)
+            if (data.status === 'success') {
+                //alert('Informações atualizadas com sucesso!');
+                showMessage('Informações atualizadas com sucesso!', 'success');
+            } else {
+                //alert('Erro ao atualizar: ' + data.error);
+                showMessage('Erro ao atualizar', 'error');
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            showMessage('Erro' + error, 'error');
+            //alert('Erro na atualização.');
+        }
+    };
+
+    const LogoutConfirm = () => {
         localStorage.removeItem('user');
         navigate('/login');
     };
 
-      const showMessage = (message, severity = 'info') => {
+    const showMessage = (message, severity = 'info') => {
         setSnackbarMessage(message);
         setSnackbarSeverity(severity);
         setSnackbarOpen(true);
@@ -206,9 +211,7 @@ const RestauranteMinhaConta = () => {
                 </SidebarMenu>
                 <SidebarSeparator />
                 <SidebarMenu>
-                    <SidebarLink onClick={handleLogout}>
-                        <FaSignOutAlt /> Logout
-                    </SidebarLink>
+                    <SidebarLink onClick={confirmLogout}><FaSignOutAlt /> Sair</SidebarLink>
                 </SidebarMenu>
             </Sidebar>
 
@@ -229,18 +232,18 @@ const RestauranteMinhaConta = () => {
                                 <ImagePreview
                                     src={
                                         restauranteData.imagem instanceof File
-                                        ? URL.createObjectURL(restauranteData.imagem)
-                                        : restauranteData.imagem
+                                            ? URL.createObjectURL(restauranteData.imagem)
+                                            : restauranteData.imagem
                                     }
                                     alt="Preview"
                                 />
                             )}
                         </InputGroup>
 
-                        
-                            <Label>Descrição</Label>
-                            <Input name="descricao" value={restauranteData.descricao} onChange={handleChange} />
- 
+
+                        <Label>Descrição</Label>
+                        <Input name="descricao" value={restauranteData.descricao} onChange={handleChange} />
+
                         <InputGroup>
                             <Label>Localização</Label>
                             <Input name="localizacao" value={restauranteData.localizacao} onChange={handleChange} />
@@ -317,6 +320,20 @@ const RestauranteMinhaConta = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+
+            {showLogoutModal && (
+                <ModalSair>
+                    <ModalSairContent>
+                        <ModalTitle>Terminar Sessão</ModalTitle>
+                        <p>Tem a certeza que deseja sair?</p>
+                        <ModalButtons>
+                            <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+                            <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+                        </ModalButtons>
+                    </ModalSairContent>
+                </ModalSair>
+            )}
         </Container>
     );
 };

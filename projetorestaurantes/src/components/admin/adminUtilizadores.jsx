@@ -5,6 +5,7 @@ import Alert from '@mui/material/Alert';
 import { FaTachometerAlt, FaSignOutAlt, FaEdit, FaUser, FaClipboardCheck, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ModalForm, ModalFormContent, CloseFormButton, ModalFormTitle, ModalFormInput, ModalFormButton, GeneratePasswordFormButton, ModalFormLabel } from '../../styles/PopUpFormStyled';
 import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, Content, DashboardTitle, SidebarSeparator, TableUtilizadoresWrapper, TableUtilizadores, ErrorText, EditButton, Footer } from '../../styles/HomeRestauranteStyled';
+import {ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton} from '../../styles/PopUpSair';
 
 const AdminUtilizadores = () => {
     const [utilizadores, setUtilizadores] = useState([]);
@@ -15,13 +16,14 @@ const AdminUtilizadores = () => {
     const [imagem, setImagem] = useState(null);
     const [tipoSelecionado, setTipoSelecionado] = useState('restaurante'); // Controla o tipo (restaurante ou cliente)
     const [showPassword, setShowPassword] = useState(false);
-    
-
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const confirmLogout = () => setShowLogoutModal(true);
+    const LogoutCancelled = () => setShowLogoutModal(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
     const navigate = useNavigate();
-    
+
 
     // Função para fazer a requisição ao backend com base no tipo selecionado
     const fetchUtilizadores = async () => {
@@ -65,84 +67,84 @@ const AdminUtilizadores = () => {
     };
 
     const handleSave = async () => {
-    try {
-        if (tipoSelecionado === 'restaurante') {
+        try {
+            if (tipoSelecionado === 'restaurante') {
 
-            const horarioRegex = /^\d{1,2}h-\d{1,2}h$/;
-            if (!horarioRegex.test(selectedUser.horario)) {
+                const horarioRegex = /^\d{1,2}h-\d{1,2}h$/;
+                if (!horarioRegex.test(selectedUser.horario)) {
                     showMessage('Formato de horário inválido. Use o formato Ex: 9h-23h', 'error');
-                    return; 
+                    return;
                 }
 
-            const formData = new FormData();
-            formData.append('id_restaurante', selectedUser.id_restaurante);
-            formData.append('nome', selectedUser.nome_restaurante);
-            formData.append('descricao', selectedUser.descricao || '');
-            formData.append('localizacao', selectedUser.localizacao || '');
-            formData.append('cidade', selectedUser.cidade || '');
-            formData.append('pais', selectedUser.pais || '');
-            formData.append('horario', selectedUser.horario || '');
-            formData.append('password', newPassword);
+                const formData = new FormData();
+                formData.append('id_restaurante', selectedUser.id_restaurante);
+                formData.append('nome', selectedUser.nome_restaurante);
+                formData.append('descricao', selectedUser.descricao || '');
+                formData.append('localizacao', selectedUser.localizacao || '');
+                formData.append('cidade', selectedUser.cidade || '');
+                formData.append('pais', selectedUser.pais || '');
+                formData.append('horario', selectedUser.horario || '');
+                formData.append('password', newPassword);
 
-            if (imagem) formData.append('imagem', imagem);
+                if (imagem) formData.append('imagem', imagem);
 
-            const response = await fetch('http://localhost:8080/admin/EditarRestaurantes', {
-                method: 'POST',
-                body: formData,
-            });
+                const response = await fetch('http://localhost:8080/admin/EditarRestaurantes', {
+                    method: 'POST',
+                    body: formData,
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.ok) {
-                //alert('Restaurante atualizado com sucesso!');
-                showMessage('Restaurante atualizado com sucesso!' , 'success');
-                fetchUtilizadores();
-                handleCloseModal();
-            } else {
-                //setError(data.error || 'Erro ao atualizar o restaurante.');
-                showMessage(data.error || 'Erro ao atualizar o restaurante.' , 'error');
+                if (response.ok) {
+                    //alert('Restaurante atualizado com sucesso!');
+                    showMessage('Restaurante atualizado com sucesso!', 'success');
+                    fetchUtilizadores();
+                    handleCloseModal();
+                } else {
+                    //setError(data.error || 'Erro ao atualizar o restaurante.');
+                    showMessage(data.error || 'Erro ao atualizar o restaurante.', 'error');
+                }
+
+            } else if (tipoSelecionado === 'cliente') {
+
+
+                if (!ValidarTelemovel(selectedUser.telefone)) {
+                    alert('Deve indicar um numero de telefone válido!');
+                    showMessage('D  eve indicar um numero de telefone válido.', 'error');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('id', selectedUser.id);
+                formData.append('nome', selectedUser.nome);
+                formData.append('telefone', selectedUser.telefone);
+                formData.append('email', selectedUser.email);
+                formData.append('password', newPassword);
+
+
+
+                const response = await fetch('http://localhost:8080/admin/AtualizarContaCliente', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    //alert('Cliente atualizado com sucesso!');
+                    showMessage('Cliente atualizado com sucesso!', 'success');
+                    fetchUtilizadores();
+                    handleCloseModal();
+                } else {
+                    //setError(data.error || 'Erro ao atualizar o cliente.');
+                    showMessage(data.error || 'Erro ao atualizar o cliente.', 'error');
+                }
             }
-
-        } else if (tipoSelecionado === 'cliente') {
-
-
-            if (!ValidarTelemovel(selectedUser.telefone)) {
-                alert('Deve indicar um numero de telefone válido!');
-                showMessage('D  eve indicar um numero de telefone válido.' , 'error');
-                return;
-            } 
-
-            const formData = new FormData();
-            formData.append('id', selectedUser.id);
-            formData.append('nome', selectedUser.nome);
-            formData.append('telefone', selectedUser.telefone);
-            formData.append('email', selectedUser.email);
-            formData.append('password', newPassword);
-
-          
-
-            const response = await fetch('http://localhost:8080/admin/AtualizarContaCliente', {
-                method: 'POST',
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                //alert('Cliente atualizado com sucesso!');
-                showMessage('Cliente atualizado com sucesso!' , 'success');
-                fetchUtilizadores();
-                handleCloseModal();
-            } else {
-                //setError(data.error || 'Erro ao atualizar o cliente.');
-                showMessage(data.error || 'Erro ao atualizar o cliente.' , 'error');
-            }
+        } catch (error) {
+            //setError('Erro ao conectar ao servidor ou ao atualizar o utilizador.');
+            showMessage('Erro ao conectar ao servidor ou ao atualizar o utilizador.', 'error');
         }
-    } catch (error) {
-        //setError('Erro ao conectar ao servidor ou ao atualizar o utilizador.');
-        showMessage('Erro ao conectar ao servidor ou ao atualizar o utilizador.' , 'error');
-    }
-};
+    };
 
     // Função para gerar uma senha mais simples e comum
     const generatePassword = (length = 10) => {
@@ -155,7 +157,7 @@ const AdminUtilizadores = () => {
         return password;
     };
 
- const ValidarTelemovel = (telefone) => {
+    const ValidarTelemovel = (telefone) => {
         const regex = /^((9[1236])|(2\d)|(800)|(808)|(707))\d{7}$/;
         return regex.test(telefone);
     };
@@ -191,7 +193,7 @@ const AdminUtilizadores = () => {
         navigate('/admin/adminUtilizadores');
     };
 
-    const Logout = () => {
+    const LogoutConfirm = () => {
         localStorage.removeItem('user');
         navigate('/login');
     };
@@ -216,9 +218,7 @@ const AdminUtilizadores = () => {
                 <SidebarSeparator />
 
                 <SidebarMenu>
-                    <SidebarLink onClick={Logout}>
-                        <FaSignOutAlt /> Logout
-                    </SidebarLink>
+                      <SidebarLink onClick={confirmLogout}><FaSignOutAlt /> Sair</SidebarLink>
                 </SidebarMenu>
             </Sidebar>
 
@@ -228,56 +228,56 @@ const AdminUtilizadores = () => {
 
                     {/* Filtro clientes e restaurantes */}
                     <div style={{ marginBottom: '20px' }}>
-                    <label style={{ fontWeight: 'bold', marginRight: '10px' }}>
-                        Tipo de utilizador:
-                    </label>
-                    <select
-                        onChange={(e) => handleTipoChange(e.target.value)}
-                        value={tipoSelecionado}
-                        style={{
-                            padding: '8px 12px',
-                            borderRadius: '5px',
-                            border: '1px solid #ccc',
-                            fontSize: '16px'
-                        }}
-                    >
-                        <option value="restaurante">Restaurantes</option>
-                        <option value="cliente">Clientes</option>
-                    </select>
-                </div>
+                        <label style={{ fontWeight: 'bold', marginRight: '10px' }}>
+                            Tipo de utilizador:
+                        </label>
+                        <select
+                            onChange={(e) => handleTipoChange(e.target.value)}
+                            value={tipoSelecionado}
+                            style={{
+                                padding: '8px 12px',
+                                borderRadius: '5px',
+                                border: '1px solid #ccc',
+                                fontSize: '16px'
+                            }}
+                        >
+                            <option value="restaurante">Restaurantes</option>
+                            <option value="cliente">Clientes</option>
+                        </select>
+                    </div>
 
                     <TableUtilizadoresWrapper>
                         {error && <ErrorText>{error}</ErrorText>}
 
                         {utilizadores && utilizadores.length > 0 ? (
                             <TableUtilizadores>
-                            <thead>
-                                <tr>
-                                <th>Nome</th>
-                                <th>Email</th>
-                                <th>Telefone</th>
-                                <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {utilizadores.map((utilizador) => (
-                                <tr key={utilizador.id_utilizador}>
-                                    <td>{utilizador.nome_restaurante || utilizador.nome}</td>
-                                    <td>{utilizador.email}</td>
-                                    <td>{utilizador.telefone}</td>
-                                    <td>
-                                    <EditButton onClick={() => handleEdit(utilizador)} title="Editar">
-                                        <FaEdit />
-                                    </EditButton>
-                                    </td>
-                                </tr>
-                                ))}
-                            </tbody>
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Telefone</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {utilizadores.map((utilizador) => (
+                                        <tr key={utilizador.id_utilizador}>
+                                            <td>{utilizador.nome_restaurante || utilizador.nome}</td>
+                                            <td>{utilizador.email}</td>
+                                            <td>{utilizador.telefone}</td>
+                                            <td>
+                                                <EditButton onClick={() => handleEdit(utilizador)} title="Editar">
+                                                    <FaEdit />
+                                                </EditButton>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
                             </TableUtilizadores>
                         ) : (
                             <p>Não há utilizadores disponíveis.</p>
                         )}
-                        </TableUtilizadoresWrapper>
+                    </TableUtilizadoresWrapper>
                 </div>
             </Content>
 
@@ -336,36 +336,36 @@ const AdminUtilizadores = () => {
                                             required
                                         />
 
-                                        
+
                                         <ModalFormLabel>Password:</ModalFormLabel>
-                                       <div style={{ position: 'relative', width: '100%' }}>
-                                        <ModalFormInput
-                                            type={showPassword ? 'text' : 'password'}
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                            style={{ paddingRight: '40px' }} // espaço para o botão
-                                            readOnly 
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(prev => !prev)}
-                                            style={{
-                                                position: 'absolute',
-                                                right: '10px',
-                                                top: '50%',
-                                                transform: 'translateY(-50%)',
-                                                background: 'none',
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                                fontSize: '16px',
-                                                color: '#333',
-                                            }}
-                                            title={showPassword ? 'Esconder password' : 'Mostrar password'}
-                                        >
-                                            {showPassword ?  <FaEyeSlash /> : <FaEye/> }
-                                        </button>
-                                    </div>
-                                        
+                                        <div style={{ position: 'relative', width: '100%' }}>
+                                            <ModalFormInput
+                                                type={showPassword ? 'text' : 'password'}
+                                                value={newPassword}
+                                                onChange={(e) => setNewPassword(e.target.value)}
+                                                style={{ paddingRight: '40px' }} // espaço para o botão
+                                                readOnly
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(prev => !prev)}
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    fontSize: '16px',
+                                                    color: '#333',
+                                                }}
+                                                title={showPassword ? 'Esconder password' : 'Mostrar password'}
+                                            >
+                                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                            </button>
+                                        </div>
+
                                         <GeneratePasswordFormButton type="button" onClick={handleGeneratePassword}>
                                             Gerar Password
                                         </GeneratePasswordFormButton>
@@ -398,7 +398,7 @@ const AdminUtilizadores = () => {
                                         />
 
                                         <ModalFormLabel>Password:</ModalFormLabel>
-                                       <div style={{ position: 'relative', width: '100%' }}>
+                                        <div style={{ position: 'relative', width: '100%' }}>
                                             <ModalFormInput
                                                 type={showPassword ? 'text' : 'password'}
                                                 value={newPassword}
@@ -431,7 +431,7 @@ const AdminUtilizadores = () => {
                                     </>
                                 )}
 
-                              {tipoSelecionado === 'restaurante' && (
+                                {tipoSelecionado === 'restaurante' && (
                                     <>
                                         <ModalFormLabel>Imagem:</ModalFormLabel>
                                         <input type="file" onChange={(e) => setImagem(e.target.files[0])} />
@@ -445,7 +445,7 @@ const AdminUtilizadores = () => {
                     </ModalFormContent>
                 </ModalForm>
             )}
-             <Footer>&copy; 2025 Administrador - Todos os direitos reservados</Footer>
+            <Footer>&copy; 2025 Administrador - Todos os direitos reservados</Footer>
 
 
             <Snackbar
@@ -458,6 +458,19 @@ const AdminUtilizadores = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+            {showLogoutModal && (
+                <ModalSair>
+                    <ModalSairContent>
+                        <ModalTitle>Terminar Sessão</ModalTitle>
+                        <p>Tem a certeza que deseja sair?</p>
+                        <ModalButtons>
+                            <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+                            <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+                        </ModalButtons>
+                    </ModalSairContent>
+                </ModalSair>
+            )}
         </Container>
     );
 };

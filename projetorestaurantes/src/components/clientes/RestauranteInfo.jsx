@@ -13,7 +13,7 @@ import {
 import {
     Header, Button, LogoutButton, SettingsButton, UserSection
 } from '../../styles/HomeStyled';
-
+import { ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton } from '../../styles/PopUpSair';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -27,6 +27,10 @@ const RestauranteInfo = () => {
     const [horarios, setHorarios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const confirmLogout = () => setShowLogoutModal(true);
+    const LogoutCancelled = () => setShowLogoutModal(false);
+
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -90,6 +94,12 @@ const RestauranteInfo = () => {
         return acc;
     }, {});
 
+    const LogoutConfirm = () => {
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
+
+
     return (
         <Container>
             <Header>
@@ -113,10 +123,7 @@ const RestauranteInfo = () => {
                             <SettingsButton onClick={() => navigate('/clientes/clientesDefinicoes')}>
                                 <FaCog />
                             </SettingsButton>
-                            <LogoutButton onClick={() => {
-                                localStorage.removeItem('user');
-                                setUser(null);
-                            }}>
+                            <LogoutButton onClick={confirmLogout}>
                                 <FaSignOutAlt />
                             </LogoutButton>
                         </>
@@ -211,6 +218,20 @@ const RestauranteInfo = () => {
             </DetailsSection>
 
             <Footer>© 2025 MesaFacil - Todos os direitos reservados</Footer>
+
+
+            {showLogoutModal && (
+                <ModalSair>
+                    <ModalSairContent>
+                        <ModalTitle>Terminar Sessão</ModalTitle>
+                        <p>Tem a certeza que deseja sair?</p>
+                        <ModalButtons>
+                            <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+                            <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+                        </ModalButtons>
+                    </ModalSairContent>
+                </ModalSair>
+            )}
         </Container>
     );
 };

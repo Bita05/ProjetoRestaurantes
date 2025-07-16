@@ -4,11 +4,15 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { Container, Sidebar, SidebarBrand, SidebarMenu, SidebarLink, Content, SidebarSeparator, Footer } from '../../styles/HomeRestauranteStyled';
 import { MenuContainer, MenuTitle, MenuGrid, MenuCard, AddMenuButton, ActionButton } from '../../styles/RestauranteMenuStyled';
+import {ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton} from '../../styles/PopUpSair';
 import { FaTachometerAlt, FaPlus, FaSignOutAlt, FaEdit, FaTrashAlt, FaRegClock, FaCalendarAlt, FaUser } from 'react-icons/fa';
 
 const RestauranteMenus = () => {
     const navigate = useNavigate();
     const [menus, setMenus] = useState([]);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const confirmLogout = () => setShowLogoutModal(true);
+    const LogoutCancelled = () => setShowLogoutModal(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
@@ -47,7 +51,7 @@ const RestauranteMenus = () => {
         fetchMenus();
     }, []);
 
-    const Logout = () => {
+     const LogoutConfirm = () => {
         localStorage.removeItem('user');
         navigate('/login');
     };
@@ -148,9 +152,7 @@ const RestauranteMenus = () => {
                 <SidebarSeparator />
 
                 <SidebarMenu>
-                    <SidebarLink onClick={Logout}>
-                        <FaSignOutAlt /> Logout
-                    </SidebarLink>
+                      <SidebarLink onClick={confirmLogout}><FaSignOutAlt /> Sair</SidebarLink>
                 </SidebarMenu>
             </Sidebar>
 
@@ -207,6 +209,20 @@ const RestauranteMenus = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+
+            {showLogoutModal && (
+                <ModalSair>
+                    <ModalSairContent>
+                        <ModalTitle>Terminar Sessão</ModalTitle>
+                        <p>Tem a certeza que deseja sair?</p>
+                        <ModalButtons>
+                            <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+                            <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+                        </ModalButtons>
+                    </ModalSairContent>
+                </ModalSair>
+            )}
         </Container>
     );
 };

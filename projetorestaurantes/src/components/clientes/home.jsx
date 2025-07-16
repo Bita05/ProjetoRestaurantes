@@ -10,6 +10,7 @@ import {
     Modal, ModalContent, CloseButton, StepButton, HorarioButton, MenuList, MenuCard, MenuImage, MenuDetails, MenuTitle, MenuDescription, MenuPrice, SelectMenuButton, NavigationContainer, NavigationArrow,
     ProgressBar, ProgressFill
 } from '../../styles/PopUpStyled';
+import {ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton} from '../../styles/PopUpSair';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -29,7 +30,9 @@ const Home = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [filteredHorarios, setFilteredHorarios] = useState([]);
     const [restaurantesPopulares, setRestaurantesPopulares] = useState([]);
-
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const confirmLogout = () => setShowLogoutModal(true);
+    const LogoutCancelled = () => setShowLogoutModal(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
@@ -37,9 +40,14 @@ const Home = () => {
 
     useEffect(() => {
         const loggedUser = JSON.parse(localStorage.getItem('user'));
-        if (loggedUser) {
+
+         if (!loggedUser || loggedUser.tipo !== 'cliente') {
+            navigate('/login');
+            return;
+         }
+        
             setUser(loggedUser);
-        }
+        
 
         fetch('http://localhost:8080/restaurantes')
             .then(response => response.json())
@@ -324,6 +332,11 @@ const Home = () => {
         setSnackbarOpen(false);
     };
 
+      const LogoutConfirm = () => {
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
+
 
 
     return (
@@ -351,13 +364,12 @@ const Home = () => {
                             <SettingsButton onClick={() => navigate('/clientes/clientesDefinicoes')}>
                                 <FaCog />
                             </SettingsButton>
-                            <LogoutButton onClick={() => {
-                                localStorage.removeItem('user');
-                                setUser(null);
-                                navigate('/login')
-                            }}>
-                                <FaSignOutAlt />
-                            </LogoutButton>
+                            
+                                <LogoutButton onClick={confirmLogout}>
+                                    <FaSignOutAlt />
+                                </LogoutButton>
+                               
+                            
                         </>
                     ) : (
                         <>
@@ -639,6 +651,19 @@ const Home = () => {
                 </Alert>
             </Snackbar>
 
+
+            {showLogoutModal && (
+                <ModalSair>
+                    <ModalSairContent>
+                        <ModalTitle>Terminar Sessão</ModalTitle>
+                        <p>Tem a certeza que deseja sair?</p>
+                        <ModalButtons>
+                            <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+                            <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+                        </ModalButtons>
+                    </ModalSairContent>
+                </ModalSair>
+            )}
 
             <Footer>
                 © {new Date().getFullYear()} MesaFácil - Todos os direitos reservados. Bruno Bita

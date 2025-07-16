@@ -4,7 +4,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { FaCog, FaSignOutAlt, FaUser, FaTrash, FaArrowLeft } from 'react-icons/fa';
 import { Container, Header, Banner, Button, LogoutButton, SettingsButton, UserSection } from '../../styles/HomeStyled';
-
+import { ModalSair, ModalSairContent, ModalTitle, ModalButtons, CancelButton, ConfirmButton } from '../../styles/PopUpSair';
 import { Title, ReservasList, ReservaCard, RestauranteImage, ReservaDetails, NomeRestaurante, ReservaInfo, CancelarButton, FilterContainer, FilterSelect, TabsContainer, Tab, ButtonVoltar } from '../../styles/MinhasReservasStyled';
 
 
@@ -16,6 +16,9 @@ const MinhasReservas = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
   const [filterOrder, setFilterOrder] = useState('asc');
   const [activeTab, setActiveTab] = useState('ativas');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const confirmLogout = () => setShowLogoutModal(true);
+  const LogoutCancelled = () => setShowLogoutModal(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
@@ -135,21 +138,26 @@ const MinhasReservas = () => {
 
       if (response.ok && data.status === 'success') {
         //alert('Reserva cancelada com sucesso!');
-         showMessage('Reserva Cancelada com sucesso', 'success')
-         setReservas((prevReservas) =>
-        prevReservas.filter((reserva) => reserva.id_reserva !== idReserva)
-      );
+        showMessage('Reserva Cancelada com sucesso', 'success')
+        setReservas((prevReservas) =>
+          prevReservas.filter((reserva) => reserva.id_reserva !== idReserva)
+        );
         //fetchReservas();
       } else {
         //alert(data.error || 'Erro ao cancelar a reserva.');
-         showMessage(data.error || 'Não foi possível cancelar a reserva!', 'error')
+        showMessage(data.error || 'Não foi possível cancelar a reserva!', 'error')
       }
     } catch (error) {
       console.error('Erro ao cancelar a reserva:', error);
       //alert('Erro na comunicação com o servidor.');
-       showMessage('Erro no servidor!', 'error')
+      showMessage('Erro no servidor!', 'error')
     }
   };
+
+   const LogoutConfirm = () => {
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
 
   const showMessage = (message, severity = 'info') => {
     setSnackbarMessage(message);
@@ -185,12 +193,7 @@ const MinhasReservas = () => {
               <SettingsButton onClick={() => navigate('/clientes/clientesDefinicoes')}>
                 <FaCog />
               </SettingsButton>
-              <LogoutButton
-                onClick={() => {
-                  localStorage.removeItem('user');
-                  setUser(null);
-                }}
-              >
+              <LogoutButton onClick={confirmLogout}>
                 <FaSignOutAlt />
               </LogoutButton>
             </>
@@ -231,7 +234,7 @@ const MinhasReservas = () => {
               <option value="desc">Preço mais alto</option>
             </FilterSelect>
           </FilterContainer>
-          
+
           {reservas.length > 0 ? (
             <ReservasList>
               {reservas.map((reserva) => {
@@ -271,7 +274,7 @@ const MinhasReservas = () => {
 
       {activeTab === 'canceladas' && (
         <>
-          
+
           {reservasCanceladas.length > 0 ? (
             <ReservasList>
               {reservasCanceladas.map((reserva) => {
@@ -308,7 +311,7 @@ const MinhasReservas = () => {
 
       {activeTab === 'passadas' && (
         <>
-        
+
           {reservasPassadas.length > 0 ? (
             <ReservasList>
               {reservasPassadas.map((reserva) => {
@@ -353,6 +356,20 @@ const MinhasReservas = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+
+      {showLogoutModal && (
+        <ModalSair>
+          <ModalSairContent>
+            <ModalTitle>Terminar Sessão</ModalTitle>
+            <p>Tem a certeza que deseja sair?</p>
+            <ModalButtons>
+              <CancelButton onClick={LogoutCancelled}>Cancelar</CancelButton>
+              <ConfirmButton onClick={LogoutConfirm}>Sair</ConfirmButton>
+            </ModalButtons>
+          </ModalSairContent>
+        </ModalSair>
+      )}
 
     </Container>
   );
