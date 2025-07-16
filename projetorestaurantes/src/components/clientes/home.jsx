@@ -49,7 +49,7 @@ const Home = () => {
             setUser(loggedUser);
         
 
-        fetch('http://localhost:8080/restaurantes')
+        fetch('https://projetorestaurantes.onrender.com/restaurantes')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
